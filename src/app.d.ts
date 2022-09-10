@@ -6,9 +6,13 @@ declare namespace App {
 		userid: string;
 	}
 
-	// interface PageData {}
+	interface PageData {
+		initialTheme?: Theme;
+	}
 
 	// interface PageError {}
 
 	// interface Platform {}
 }
+
+type Theme = 'dark' | 'light' | 'system';

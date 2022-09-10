@@ -1,8 +1,22 @@
 <script lang="ts">
-	import Header from '$lib/header/Header.svelte';
 	import '../app.css';
+
+	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import Header from '$lib/header/Header.svelte';
+	import { theme } from '$lib/stores';
+	import type { LayoutData } from './$types';
+
+	export let data: LayoutData;
+
+	$theme = data.initialTheme;
 </script>
 
+<svelte:head>
+	<meta name="color-scheme" content={$theme == 'system' ? 'light dark' : $theme} />
+	<link rel="stylesheet" href={`/theme/${$theme}.css`} />
+</svelte:head>
+
+<ThemeSwitcher />
 <Header />
 
 <main>

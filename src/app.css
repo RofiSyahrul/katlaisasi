@@ -1,9 +1,8 @@
 @import '@fontsource/fira-mono';
 
 :root {
-	font-family: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-	--font-mono: 'Fira Mono', monospace;
+	--font-family: A-apple-system, system-ui, sans-serif, 'Segoe UI', Helvetica Neue, Helvetica,
+		Roboto, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
 	--pure-white: #ffffff;
 	--primary-color: #b9c6d2;
 	--secondary-color: #d0dde9;
@@ -14,6 +13,34 @@
 	--background-without-opacity: rgba(255, 255, 255, 0.7);
 	--column-width: 42rem;
 	--column-margin-top: 4rem;
+
+	--color-neutral-dim0: #0f172a;
+	--color-neutral-bright0: #f1f5f9;
+	--color-neutral-dim: #1e293b;
+	--color-neutral-bright: #e2e8f0;
+	--color-neutral-dim1: #334155;
+	--color-neutral-bright1: #cbd5e1;
+	--color-neutral-dim2: #475569;
+	--color-neutral-bright2: #94a3b8;
+
+	--color-primary-dim: #075985;
+	--color-primary-bright: #bae6fd;
+
+	--color-secondary-dim: #059669;
+	--color-secondary-bright: #6ee7b7;
+
+	--color-danger-dim: #b91c1c;
+	--color-danger-bright: #fecaca;
+	--color-danger-dim1: #dc2626;
+	--color-danger-bright1: #fca5a5;
+
+	--color-bg-char-empty: transparent;
+	--color-bg-char-guess: var(--color-neutral-dim2);
+	--color-bg-char-wrong: var(--color-neutral-dim1);
+	--color-bg-char-correct: #ca8a04;
+	--color-bg-char-exact: #15803d;
+
+	font-family: var(--font-family);
 }
 
 body {
@@ -81,7 +108,6 @@ h2 {
 
 pre {
 	font-size: 16px;
-	font-family: var(--font-mono);
 	background-color: rgba(255, 255, 255, 0.45);
 	border-radius: 3px;
 	box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);

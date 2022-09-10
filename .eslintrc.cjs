@@ -13,7 +13,15 @@ module.exports = {
 	],
 	plugins: ['svelte3', '@typescript-eslint', 'import'],
 	ignorePatterns: ['*.cjs'],
-	overrides: [{ files: ['*.svelte'], processor: 'svelte3/svelte3' }],
+	overrides: [
+		{
+			files: ['*.svelte'],
+			processor: 'svelte3/svelte3',
+			rules: {
+				'no-undef': 0
+			}
+		}
+	],
 	settings: {
 		'import/resolver': {
 			node: {
