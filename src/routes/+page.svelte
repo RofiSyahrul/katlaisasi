@@ -1,24 +1,48 @@
 <script lang="ts">
-  import Counter from '$lib/Counter.svelte';
+  import { quintOut } from 'svelte/easing';
+  import { slide } from 'svelte/transition';
+
+  import UserNameForm from '$lib/components/UserNameForm.svelte';
+  import { userName } from '$lib/stores';
+
+  let isUserNameSaved = false;
+  let isEditUserNameCanceled = false;
+  let hasInitialUserName = !!$userName;
+
+  $: isUserNameFormShown = !isEditUserNameCanceled && !isUserNameSaved && !hasInitialUserName;
+  $: if (isUserNameSaved) hasInitialUserName = true;
 </script>
 
 <section>
-  <h1>
-    <span class="welcome">
-      <picture>
-        <source srcset="svelte-welcome.webp" type="image/webp" />
-        <img src="svelte-welcome.png" alt="Welcome" />
-      </picture>
-    </span>
+  <h1>KATLAISASI</h1>
+  <p>
+    Adu mekanik <a href="https://katla.vercel.app" target="_blank"><strong>KATLA</strong></a> bersama
+    teman/keluarga
+  </p>
+</section>
 
-    to your new<br />SvelteKit app
-  </h1>
+<section class="welcome">
+  <div>
+    {#if $userName}
+      <h2>Selamat Datang, <u><em>{$userName}</em></u>!</h2>
+    {:else}
+      <h2>Selamat Datang!</h2>
+      <p>Kenalan dulu yuk! Siapa nama kamu?</p>
+    {/if}
+  </div>
 
-  <h2>
-    try editing <strong>src/routes/+page.svelte</strong>
-  </h2>
-
-  <Counter />
+  {#if isUserNameFormShown}
+    <UserNameForm
+      bind:hasBeenSaved={isUserNameSaved}
+      bind:hasBeenCanceled={isEditUserNameCanceled}
+      shouldShowCancelButton={hasInitialUserName}
+      shouldResetStateOnDestroy={hasInitialUserName}
+    />
+  {:else}
+    <button on:click={() => (isUserNameFormShown = true)} in:slide={{ easing: quintOut }}>
+      Ganti nama
+    </button>
+  {/if}
 </section>
 
 <style>
@@ -28,25 +52,30 @@
     justify-content: center;
     align-items: center;
     flex: 1;
-  }
-
-  h1 {
-    width: 100%;
+    gap: 8px;
   }
 
   .welcome {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 0;
-    padding: 0 0 calc(100% * 495 / 2048) 0;
+    gap: 16px;
+  }
+  .welcome > div:first-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 32px;
+    text-align: center;
+    flex: 1;
+    gap: 4px;
   }
 
-  .welcome img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    display: block;
+  h1,
+  h2,
+  p {
+    margin: 0;
+  }
+
+  button {
+    min-height: unset;
   }
 </style>

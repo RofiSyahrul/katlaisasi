@@ -12,6 +12,7 @@ declare namespace App {
 
   interface Locals {
     userid: string;
+    userName: string;
   }
 
   interface PageData {

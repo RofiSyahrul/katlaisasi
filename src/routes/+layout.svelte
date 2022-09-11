@@ -4,12 +4,13 @@
   import { page } from '$app/stores';
   import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
   import Header from '$lib/header/Header.svelte';
-  import { theme } from '$lib/stores';
+  import { theme, userName } from '$lib/stores';
   import type { LayoutData } from './$types';
 
   export let data: LayoutData;
 
   $theme = data.initialTheme;
+  $userName = data.userName;
 
   let description: string,
     image = data.seo.image,

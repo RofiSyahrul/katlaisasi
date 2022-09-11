@@ -3,9 +3,9 @@
   --color-text-body: var(--color-neutral-bright);
   --color-text-inverse: var(--color-neutral-dim);
 
-  --color-bg-primary: var(--color-primary-bright);
-  --color-bg-secondary: var(--color-secondary-bright);
-  --color-bg-danger: var(--color-danger-bright);
+  --color-primary: var(--color-primary-bright);
+  --color-secondary: var(--color-secondary-bright);
+  --color-danger: var(--color-danger-bright);
 
-  --color-border-char-empty: var(--color-neutral-dim1);
+  --color-border: var(--color-neutral-dim1);
 }

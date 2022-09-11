@@ -3,11 +3,11 @@
   --color-text-body: var(--color-neutral-dim);
   --color-text-inverse: var(--color-neutral-bright);
 
-  --color-bg-primary: var(--color-primary-dim);
-  --color-bg-secondary: var(--color-secondary-dim);
-  --color-bg-danger: var(--color-danger-dim);
+  --color-primary: var(--color-primary-dim);
+  --color-secondary: var(--color-secondary-dim);
+  --color-danger: var(--color-danger-dim);
 
-  --color-border-char-empty: var(--color-neutral-bright1);
+  --color-border: var(--color-neutral-bright1);
 }
 
 @media (prefer-color-scheme: dark) {
@@ -16,10 +16,10 @@
     --color-text-body: var(--color-neutral-bright);
     --color-text-inverse: var(--color-neutral-dim);
 
-    --color-bg-primary: var(--color-primary-bright);
-    --color-bg-secondary: var(--color-secondary-bright);
-    --color-bg-danger: var(--color-danger-bright);
+    --color-primary: var(--color-primary-bright);
+    --color-secondary: var(--color-secondary-bright);
+    --color-danger: var(--color-danger-bright);
 
-    --color-border-char-empty: var(--color-neutral-dim1);
+    --color-border: var(--color-neutral-dim1);
   }
 }
