@@ -1,131 +1,131 @@
 :root {
-	--font-family: -apple-system, system-ui, sans-serif, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
-		Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
-	--pure-white: #ffffff;
-	--primary-color: #b9c6d2;
-	--secondary-color: #d0dde9;
-	--tertiary-color: #edf0f8;
-	--accent-color: #ff3e00;
-	--heading-color: rgba(0, 0, 0, 0.7);
-	--text-color: #444444;
-	--background-without-opacity: rgba(255, 255, 255, 0.7);
-	--column-width: 42rem;
-	--column-margin-top: 4rem;
+  --font-family: -apple-system, system-ui, sans-serif, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
+    Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+  --pure-white: #ffffff;
+  --primary-color: #b9c6d2;
+  --secondary-color: #d0dde9;
+  --tertiary-color: #edf0f8;
+  --accent-color: #ff3e00;
+  --heading-color: rgba(0, 0, 0, 0.7);
+  --text-color: #444444;
+  --background-without-opacity: rgba(255, 255, 255, 0.7);
+  --column-width: 42rem;
+  --column-margin-top: 4rem;
 
-	--color-neutral-dim0: #0f172a;
-	--color-neutral-bright0: #f1f5f9;
-	--color-neutral-dim: #1e293b;
-	--color-neutral-bright: #e2e8f0;
-	--color-neutral-dim1: #334155;
-	--color-neutral-bright1: #cbd5e1;
-	--color-neutral-dim2: #475569;
-	--color-neutral-bright2: #94a3b8;
+  --color-neutral-dim0: #0f172a;
+  --color-neutral-bright0: #f1f5f9;
+  --color-neutral-dim: #1e293b;
+  --color-neutral-bright: #e2e8f0;
+  --color-neutral-dim1: #334155;
+  --color-neutral-bright1: #cbd5e1;
+  --color-neutral-dim2: #475569;
+  --color-neutral-bright2: #94a3b8;
 
-	--color-primary-dim: #075985;
-	--color-primary-bright: #bae6fd;
+  --color-primary-dim: #075985;
+  --color-primary-bright: #bae6fd;
 
-	--color-secondary-dim: #059669;
-	--color-secondary-bright: #6ee7b7;
+  --color-secondary-dim: #059669;
+  --color-secondary-bright: #6ee7b7;
 
-	--color-danger-dim: #b91c1c;
-	--color-danger-bright: #fecaca;
-	--color-danger-dim1: #dc2626;
-	--color-danger-bright1: #fca5a5;
+  --color-danger-dim: #b91c1c;
+  --color-danger-bright: #fecaca;
+  --color-danger-dim1: #dc2626;
+  --color-danger-bright1: #fca5a5;
 
-	--color-bg-char-empty: transparent;
-	--color-bg-char-guess: var(--color-neutral-dim2);
-	--color-bg-char-wrong: var(--color-neutral-dim1);
-	--color-bg-char-correct: #ca8a04;
-	--color-bg-char-exact: #15803d;
+  --color-bg-char-empty: transparent;
+  --color-bg-char-guess: var(--color-neutral-dim2);
+  --color-bg-char-wrong: var(--color-neutral-dim1);
+  --color-bg-char-correct: #ca8a04;
+  --color-bg-char-exact: #15803d;
 
-	font-family: var(--font-family);
+  font-family: var(--font-family);
 }
 
 body {
-	min-height: 100vh;
-	margin: 0;
-	background-color: var(--primary-color);
-	background: linear-gradient(
-		180deg,
-		var(--primary-color) 0%,
-		var(--secondary-color) 10.45%,
-		var(--tertiary-color) 41.35%
-	);
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--primary-color);
+  background: linear-gradient(
+    180deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 10.45%,
+    var(--tertiary-color) 41.35%
+  );
 }
 
 body::before {
-	content: '';
-	width: 80vw;
-	height: 100vh;
-	position: absolute;
-	top: 0;
-	left: 10vw;
-	z-index: -1;
-	background: radial-gradient(
-		50% 50% at 50% 50%,
-		var(--pure-white) 0%,
-		rgba(255, 255, 255, 0) 100%
-	);
-	opacity: 0.05;
+  content: '';
+  width: 80vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 10vw;
+  z-index: -1;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    var(--pure-white) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  opacity: 0.05;
 }
 
 #svelte {
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 h1,
 h2,
 p {
-	font-weight: 400;
-	color: var(--heading-color);
+  font-weight: 400;
+  color: var(--heading-color);
 }
 
 p {
-	line-height: 1.5;
+  line-height: 1.5;
 }
 
 a {
-	color: var(--accent-color);
-	text-decoration: none;
+  color: var(--accent-color);
+  text-decoration: none;
 }
 
 a:hover {
-	text-decoration: underline;
+  text-decoration: underline;
 }
 
 h1 {
-	font-size: 2rem;
-	text-align: center;
+  font-size: 2rem;
+  text-align: center;
 }
 
 h2 {
-	font-size: 1rem;
+  font-size: 1rem;
 }
 
 pre {
-	font-size: 16px;
-	background-color: rgba(255, 255, 255, 0.45);
-	border-radius: 3px;
-	box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
-	padding: 0.5em;
-	overflow-x: auto;
-	color: var(--text-color);
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.45);
+  border-radius: 3px;
+  box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
+  padding: 0.5em;
+  overflow-x: auto;
+  color: var(--text-color);
 }
 
 input,
 button {
-	font-size: inherit;
-	font-family: inherit;
+  font-size: inherit;
+  font-family: inherit;
 }
 
 button:focus:not(:focus-visible) {
-	outline: none;
+  outline: none;
 }
 
 @media (min-width: 720px) {
-	h1 {
-		font-size: 2.4rem;
-	}
+  h1 {
+    font-size: 2.4rem;
+  }
 }

@@ -1,11 +1,11 @@
 :root {
-	--color-bg-body: var(--color-neutral-bright);
-	--color-text-body: var(--color-neutral-dim);
-	--color-text-inverse: var(--color-neutral-bright);
+  --color-bg-body: var(--color-neutral-bright);
+  --color-text-body: var(--color-neutral-dim);
+  --color-text-inverse: var(--color-neutral-bright);
 
-	--color-bg-primary: var(--color-primary-dim);
-	--color-bg-secondary: var(--color-secondary-dim);
-	--color-bg-danger: var(--color-danger-dim);
+  --color-bg-primary: var(--color-primary-dim);
+  --color-bg-secondary: var(--color-secondary-dim);
+  --color-bg-danger: var(--color-danger-dim);
 
-	--color-border-char-empty: var(--color-neutral-bright1);
+  --color-border-char-empty: var(--color-neutral-bright1);
 }
