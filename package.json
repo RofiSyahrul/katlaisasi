@@ -38,7 +38,10 @@
     "vite": "^3.1.0"
   },
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "@liveblocks/client": "^0.17.11",
+    "@liveblocks/node": "^0.17.11"
+  },
   "lint-staged": {
     "*.{svelte,ts,js}": [
       "prettier --check",

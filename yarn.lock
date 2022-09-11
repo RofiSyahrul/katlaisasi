@@ -270,6 +270,18 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@liveblocks/client@^0.17.11":
+  version "0.17.11"
+  resolved "https://registry.yarnpkg.com/@liveblocks/client/-/client-0.17.11.tgz#5130644a11827c4dfa0014bb4ab080e9bdd2e833"
+  integrity sha512-ToVzVa6KZE+TnElkV58uTPSKymgQ/fC6mRPtNKGA/SHC8BdgNbULHBV5Van4XWKnoC4BMyC+TAcukwEaeNxREw==
+
+"@liveblocks/node@^0.17.11":
+  version "0.17.11"
+  resolved "https://registry.yarnpkg.com/@liveblocks/node/-/node-0.17.11.tgz#c91d635b7d0654f451053128fb26c981cf52d758"
+  integrity sha512-9ws15L5lZzrJaEQHCQJH9tYZuQR3DJHQ92JrX+GJPOMAxt9tGAqhnXuZGohywss5YALoF0Prw+glIwrtn9xVZw==
+  dependencies:
+    node-fetch "^2.6.1"
+
 "@mapbox/node-pre-gyp@^1.0.5":
   version "1.0.10"
   resolved "https://registry.yarnpkg.com/@mapbox/node-pre-gyp/-/node-pre-gyp-1.0.10.tgz#8e6735ccebbb1581e5a7e652244cadc8a844d03c"
@@ -2549,7 +2561,7 @@ node-domexception@^1.0.0:
   resolved "https://registry.yarnpkg.com/node-domexception/-/node-domexception-1.0.0.tgz#6888db46a1f71c0b76b3f7555016b63fe64766e5"
   integrity sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==
 
-node-fetch@^2.6.7:
+node-fetch@^2.6.1, node-fetch@^2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
   integrity sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==

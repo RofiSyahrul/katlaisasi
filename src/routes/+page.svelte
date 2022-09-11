@@ -23,7 +23,7 @@
 
 <section class="welcome">
   <div>
-    {#if $userName}
+    {#if hasInitialUserName && $userName}
       <h2>Selamat Datang, <u><em>{$userName}</em></u>!</h2>
     {:else}
       <h2>Selamat Datang!</h2>
