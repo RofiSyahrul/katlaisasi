@@ -1,8 +1,6 @@
-@import '@fontsource/fira-mono';
-
 :root {
-	--font-family: A-apple-system, system-ui, sans-serif, 'Segoe UI', Helvetica Neue, Helvetica,
-		Roboto, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+	--font-family: -apple-system, system-ui, sans-serif, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
+		Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
 	--pure-white: #ffffff;
 	--primary-color: #b9c6d2;
 	--secondary-color: #d0dde9;
