@@ -5,9 +5,9 @@ export type Presence = {
   userName: string;
 };
 
-export type GuessStatus = 'guess' | 'wrong' | 'correct' | 'exact';
+export type GuessStatus = 'guessing' | 'wrong' | 'correct' | 'exact';
 
-type Guess = {
+export type Guess = {
   char: string;
   status: GuessStatus;
 };

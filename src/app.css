@@ -32,11 +32,20 @@
   --color-danger-dim1: #dc2626;
   --color-danger-bright1: #fca5a5;
 
-  --color-bg-char-empty: transparent;
-  --color-bg-char-guess: var(--color-neutral-dim2);
-  --color-bg-char-wrong: var(--color-neutral-dim1);
-  --color-bg-char-correct: #ca8a04;
-  --color-bg-char-exact: #15803d;
+  --color-bg-tile-empty: transparent;
+  --color-bg-tile-guessing: var(--color-neutral-dim2);
+  --color-bg-tile-wrong: var(--color-neutral-dim1);
+  --color-bg-tile-correct: #ca8a04;
+  --color-bg-tile-exact: #15803d;
+
+  --ring-offset-shadow: 0 0 #0000;
+  --ring-shadow: 0 0 #0000;
+
+  --shadow-md: var(--ring-offset-shadow), var(--ring-shadow), 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  --shadow-xl: var(--ring-offset-shadow), var(--ring-shadow), 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1);
 
   font-family: var(--font-family);
 }
@@ -45,6 +54,14 @@ body {
   min-height: 100vh;
   margin: 0;
   background-color: var(--color-bg-body);
+  color: var(--color-text-body);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  color: inherit;
 }
 
 h1,
@@ -105,6 +122,9 @@ button {
   border-radius: 4px;
   outline: none;
   border: none;
+  font-size: 1rem;
+  line-height: 1rem;
+  font-weight: 600;
 }
 
 button:disabled {

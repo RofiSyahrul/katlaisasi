@@ -4,23 +4,24 @@
 
   import { browser } from '$app/environment';
   import { page } from '$app/stores';
+  import Popup from '$lib/components/Popup.svelte';
+  import UserNameForm from '$lib/components/UserNameForm.svelte';
   import { userName } from '$lib/stores';
-  import BoxList from './components/BoxList.svelte';
+  import Game from './components/Game.svelte';
   import { setRoomContext, type RoomType } from './room-context';
 
   let client: Client;
   let room: RoomType;
   let isAlreadyOpenedInOtherTab = false;
+  let isPopupOpen = !$userName;
+  let isUserNameSaved = false;
 
   $: roomID = `katlaisasi-${$page.params.id}`;
+  $: if (isUserNameSaved) isPopupOpen = false;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   $: setRoomContext(room);
-
-  $: if (room) {
-    room.updatePresence({ userName: $userName });
-  }
 
   function handleBeforeUnload() {
     localStorage.removeItem(roomID);
@@ -60,9 +61,15 @@
 </script>
 
 {#if isAlreadyOpenedInOtherTab}
-  <p>Ruangan {$page.params.id} sudah dibuka di tab lain</p>
+  <p>Ruangan {$page.params.id} udah dibuka di tab lain. Tolong buka di 1 tab aja</p>
 {/if}
 
 {#if room}
-  <BoxList />
+  <Game isUserNameUpdated={isUserNameSaved} on:editUserName={() => (isPopupOpen = true)} />
 {/if}
+
+<Popup isOpen={isPopupOpen} on:close={() => (isPopupOpen = false)}>
+  {#if isPopupOpen}
+    <UserNameForm bind:hasBeenSaved={isUserNameSaved} shouldResetStateOnDestroy />
+  {/if}
+</Popup>

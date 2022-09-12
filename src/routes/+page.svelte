@@ -6,10 +6,9 @@
   import { userName } from '$lib/stores';
 
   let isUserNameSaved = false;
-  let isEditUserNameCanceled = false;
   let hasInitialUserName = !!$userName;
 
-  $: isUserNameFormShown = !isEditUserNameCanceled && !isUserNameSaved && !hasInitialUserName;
+  $: isUserNameFormShown = isUserNameSaved && !hasInitialUserName;
   $: if (isUserNameSaved) hasInitialUserName = true;
 </script>
 
@@ -34,8 +33,6 @@
   {#if isUserNameFormShown}
     <UserNameForm
       bind:hasBeenSaved={isUserNameSaved}
-      bind:hasBeenCanceled={isEditUserNameCanceled}
-      shouldShowCancelButton={hasInitialUserName}
       shouldResetStateOnDestroy={hasInitialUserName}
     />
   {:else}

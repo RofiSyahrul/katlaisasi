@@ -2,6 +2,7 @@
   import '../app.css';
 
   import { page } from '$app/stores';
+  import { createPortal } from '$lib/actions/portal';
   import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
   import Header from '$lib/header/Header.svelte';
   import { theme, userName } from '$lib/stores';
@@ -79,6 +80,8 @@
 <footer>
   <p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
 </footer>
+
+<div use:createPortal />
 
 <style>
   main {

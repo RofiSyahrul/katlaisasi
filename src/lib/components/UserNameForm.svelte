@@ -8,10 +8,8 @@
 
   let input: HTMLInputElement;
 
-  export let hasBeenCanceled = false;
   export let hasBeenSaved = false;
   export let shouldResetStateOnDestroy = false;
-  export let shouldShowCancelButton = false;
 
   onMount(() => {
     input.focus();
@@ -19,7 +17,6 @@
 
   onDestroy(() => {
     if (shouldResetStateOnDestroy) {
-      hasBeenCanceled = false;
       hasBeenSaved = false;
     }
   });
@@ -40,19 +37,10 @@
     bind:value={$userName}
     maxlength="20"
     name="katlaisasi-userName"
+    placeholder="Nama kamu"
     type="text"
   />
   <button aria-label="Simpan nama kamu" disabled={!$userName}>Simpan</button>
-  {#if shouldShowCancelButton}
-    <button
-      aria-label="Batalkan"
-      style:background-color="var(--color-danger)"
-      type="button"
-      on:click={() => (hasBeenCanceled = true)}
-    >
-      Batalkan
-    </button>
-  {/if}
 </form>
 
 <style>
@@ -61,6 +49,7 @@
     border-radius: 4px;
     padding: 0 8px;
     outline: none;
+    background-color: var(--color-bg-body);
     border: 2px solid var(--color-border);
   }
 
