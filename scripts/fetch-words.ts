@@ -36,8 +36,8 @@ async function fetchWords(): Promise<string[]> {
 (async () => {
   try {
     const words = await fetchWords();
-    const wordsFilePath = path.resolve(__dirname, '../data/words.csv');
-    await writeFile(wordsFilePath, words.join(','), 'utf-8');
+    const wordsFilePath = path.resolve(__dirname, '../src/lib/constants/words.server.ts');
+    await writeFile(wordsFilePath, `export const words = ${JSON.stringify(words)};`, 'utf-8');
     // eslint-disable-next-line no-console
     console.log(`Success saving ${words.length} words from KBBI to ${wordsFilePath}`);
   } catch (error) {
