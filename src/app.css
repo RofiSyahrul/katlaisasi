@@ -34,7 +34,7 @@
 
   --color-bg-tile-empty: transparent;
   --color-bg-tile-guessing: var(--color-neutral-dim2);
-  --color-bg-tile-wrong: var(--color-neutral-dim1);
+  --color-bg-tile-wrong: var(--color-neutral-dim0);
   --color-bg-tile-correct: #ca8a04;
   --color-bg-tile-exact: #15803d;
 

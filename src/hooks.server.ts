@@ -1,3 +1,6 @@
+import { readFile } from 'fs/promises';
+import path from 'path';
+
 import type { Handle } from '@sveltejs/kit';
 
 import { USER_ID, USER_NAME } from '$lib/constants/cookie-keys';
@@ -16,6 +19,11 @@ export const handle: Handle = async ({ event, resolve }) => {
 
   event.locals.userid = userid;
   event.locals.userName = userName;
+
+  const wordsFilePath = path.resolve(process.cwd(), './data/words.csv');
+  event.locals.words = await readFile(wordsFilePath, { encoding: 'utf-8' }).then((res) =>
+    res.split(',')
+  );
 
   return resolve(event);
 };

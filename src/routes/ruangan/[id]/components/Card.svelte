@@ -8,16 +8,18 @@
   import { createEventDispatcher } from 'svelte';
 
   import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
-  import type { Guess } from '../room-context';
+  import { TOTAL_GUESS_ROW } from '$lib/constants/game';
+  import type { GuessItem } from '$lib/types/game';
 
-  export let guesses: Guess[][] = [];
+  export let guesses: GuessItem[][] = [];
   export let isAdmin: boolean;
   export let isCurrentUser: boolean;
+  export let isCurrentUserPlaying: boolean;
   export let userName: string;
 
   const dispatch = createEventDispatcher<CardEvent>();
 
-  const guessesPlaceholder = Array.from<unknown, string[]>({ length: 6 }, () => [
+  const guessesPlaceholder = Array.from<unknown, string[]>({ length: TOTAL_GUESS_ROW }, () => [
     '',
     '',
     '',
@@ -26,13 +28,10 @@
   ]);
 </script>
 
-<div class="card">
+<div class="card" class:card_current-user={isCurrentUser}>
   <div class="card__title">
-    <h3>
+    <h3 title={userName}>
       {userName || 'Unknown'}
-      {#if isCurrentUser}
-        <em>(Kamu)</em>
-      {/if}
     </h3>
     <div class="card__title__right">
       {#if isAdmin}
@@ -73,9 +72,10 @@
         {#each guessChars as defaultChar, charIndex}
           {@const guess = guesses[guessIndex]?.[charIndex]}
           {@const char = guess?.char ?? defaultChar}
-          {@const status = guess && char ? guess.status : 'empty'}
+          {@const shouldShowChar = isCurrentUser || !isCurrentUserPlaying}
+          {@const status = guess && char && shouldShowChar ? guess.status : 'empty'}
           <div class={`card__guess-tile card__guess-tile_${status}`}>
-            {char}
+            {shouldShowChar ? char : ''}
           </div>
         {/each}
       </div>
@@ -92,11 +92,15 @@
     box-shadow: var(--shadow-md);
   }
 
+  .card.card_current-user {
+    border-width: 2px;
+  }
+
   .card__title {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 6px;
+    gap: 4px;
     width: 100%;
     height: 48px;
     padding: 4px;
@@ -105,6 +109,10 @@
 
   .card__title h3 {
     margin: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .card__title__right {
@@ -137,14 +145,14 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     line-height: 1rem;
     font-weight: bold;
     font-family: var(--font-family);
     vertical-align: middle;
     text-transform: uppercase;
     border-radius: 4px;
-    color: var(--color-text-body);
+    color: var(--color-neutral-bright);
   }
 
   .card__guess-tile::before {

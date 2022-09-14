@@ -8,7 +8,7 @@
   let isUserNameSaved = false;
   let hasInitialUserName = !!$userName;
 
-  $: isUserNameFormShown = isUserNameSaved && !hasInitialUserName;
+  $: isUserNameFormShown = !isUserNameSaved && !hasInitialUserName;
   $: if (isUserNameSaved) hasInitialUserName = true;
 </script>
 

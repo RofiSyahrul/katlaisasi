@@ -1,19 +1,26 @@
 import type { LiveMap, Room } from '@liveblocks/client';
 import { getContext, setContext } from 'svelte';
 
+import type { GuessItem } from '$lib/types/game';
+
+export type GameStatus = 'playing' | 'defeat' | 'victory';
+
 export type Presence = {
+  gameStatus: GameStatus;
   userName: string;
 };
 
-export type GuessStatus = 'guessing' | 'wrong' | 'correct' | 'exact';
-
-export type Guess = {
-  char: string;
-  status: GuessStatus;
+export type SubmitGuessSuccessResponse = {
+  guessResult: GuessItem[];
 };
 
-type RoomStorage = {
-  guesses: LiveMap<string, Guess[][]>;
+export type SubmitGuessInvalidResponse = {
+  message: string;
+};
+
+export type RoomStorage = {
+  activeRound: number;
+  guesses: LiveMap<string, GuessItem[][]>;
 };
 
 export type UserMeta = {
@@ -24,11 +31,12 @@ export type UserMeta = {
 };
 
 type RoomEventGetGuessResult = {
-  result: Guess[];
+  result: GuessItem[];
   type: 'GET_GUEST_RESULT';
+  userID: string;
 };
 
-type RoomEvent = RoomEventGetGuessResult;
+export type RoomEvent = RoomEventGetGuessResult;
 
 export type RoomType = Room<Presence, RoomStorage, UserMeta, RoomEvent>;
 

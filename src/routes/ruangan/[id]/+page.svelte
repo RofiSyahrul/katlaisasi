@@ -7,13 +7,24 @@
   import Popup from '$lib/components/Popup.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
   import { userName } from '$lib/stores';
+  import type { PageServerData } from './$types';
   import Game from './components/Game.svelte';
-  import { setRoomContext, type RoomType } from './room-context';
+  import {
+    setRoomContext,
+    type Presence,
+    type RoomEvent,
+    type RoomStorage,
+    type RoomType,
+    type UserMeta
+  } from './room-context';
+
+  export let data: PageServerData;
 
   let client: Client;
   let room: RoomType;
   let isAlreadyOpenedInOtherTab = false;
   let isPopupOpen = !$userName;
+  let isReady = false;
   let isUserNameSaved = false;
 
   $: roomID = `katlaisasi-${$page.params.id}`;
@@ -37,12 +48,21 @@
       authEndpoint: '/ruangan/masuk'
     });
 
-    room = client.enter(roomID, {
-      initialPresence: { userName: $userName },
-      initialStorage: { guesses: new LiveMap() }
+    room = client.enter<Presence, RoomStorage, UserMeta, RoomEvent>(roomID, {
+      initialPresence: { gameStatus: 'playing', userName: $userName },
+      initialStorage: { activeRound: 0, guesses: new LiveMap() }
     });
 
     if (browser) {
+      room.getStorage().then(({ root }) => {
+        const activeRound = root.get('activeRound');
+        if (data.round !== activeRound) {
+          window.location.search = activeRound > 0 ? `?round=${activeRound}` : '';
+          return;
+        }
+        isReady = true;
+      });
+
       localStorage.setItem(roomID, 'true');
       window.addEventListener('beforeunload', handleBeforeUnload);
     }
@@ -61,15 +81,18 @@
 </script>
 
 {#if isAlreadyOpenedInOtherTab}
-  <p>Ruangan {$page.params.id} udah dibuka di tab lain. Tolong buka di 1 tab aja</p>
-{/if}
-
-{#if room}
-  <Game isUserNameUpdated={isUserNameSaved} on:editUserName={() => (isPopupOpen = true)} />
-{/if}
-
-<Popup isOpen={isPopupOpen} on:close={() => (isPopupOpen = false)}>
-  {#if isPopupOpen}
-    <UserNameForm bind:hasBeenSaved={isUserNameSaved} shouldResetStateOnDestroy />
+  <p>
+    Ruangan <strong>{$page.params.id}</strong> udah dibuka di tab lain. Tolong buka di 1 tab aja
+  </p>
+{:else}
+  {#if room && isReady}
+    <Game isUserNameUpdated={isUserNameSaved} on:editUserName={() => (isPopupOpen = true)} />
+  {:else}
+    <p>Loading...</p>
   {/if}
-</Popup>
+  <Popup isOpen={isPopupOpen} on:close={() => (isPopupOpen = false)}>
+    {#if isPopupOpen}
+      <UserNameForm bind:hasBeenSaved={isUserNameSaved} shouldResetStateOnDestroy />
+    {/if}
+  </Popup>
+{/if}
