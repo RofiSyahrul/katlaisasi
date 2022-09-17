@@ -3,10 +3,13 @@ import { cookieMaxAge } from '$lib/constants/time';
 import type { Actions } from '.svelte-kit/types/src/routes/$types';
 
 export const actions: Actions = {
-  'set-user-name': async ({ cookies, locals, request }) => {
+  'set-user-name': async ({ cookies, locals, request, url }) => {
     const form = await request.formData();
     const userName = `${form.get('katlaisasi-userName') ?? ''}`;
     locals.userName = userName;
-    cookies.set(USER_NAME, userName, { maxAge: cookieMaxAge });
+    cookies.set(USER_NAME, userName, {
+      maxAge: cookieMaxAge,
+      secure: url.hostname !== 'localhost'
+    });
   }
 };

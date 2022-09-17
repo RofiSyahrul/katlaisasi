@@ -5,7 +5,7 @@ import { MAX_ROUND_PER_ROOM } from '$lib/constants/game';
 import { decode, encode } from '$lib/utils/codec.server';
 import { generateEncodedAnswer, getGameResult } from '$lib/utils/game.server';
 import type { Actions, PageServerLoad } from './$types';
-import type { SubmitGuessInvalidResponse, SubmitGuessSuccessResponse } from './room-context';
+import type { SubmitGuessInvalidResponse, SubmitGuessSuccessResponse } from './types';
 
 function getRound(url: URL) {
   const round = Number(url.searchParams.get('round'));
@@ -28,7 +28,10 @@ export const load: PageServerLoad = async ({ cookies, locals, params, url }) => 
 
   const round = getRound(url);
   if (round >= MAX_ROUND_PER_ROOM) {
-    throw error(406, `Kamu udah main ${MAX_ROUND_PER_ROOM} di ruangan ini. Udahan dulu mainnya 🥹`);
+    throw error(
+      406,
+      `Kamu udah main ${MAX_ROUND_PER_ROOM} kali di ruangan ini. Udahan dulu mainnya 🥹`
+    );
   }
 
   const key = getKey(params.id, round);
@@ -40,10 +43,10 @@ export const load: PageServerLoad = async ({ cookies, locals, params, url }) => 
       encodedAnswer = generateEncodedAnswer({ roomNumber, round, words: locals.words });
       cachedAnswerMap.set(key, encodedAnswer);
     }
-    cookies.set(key, encodedAnswer);
+    cookies.set(key, encodedAnswer, { secure: url.hostname !== 'localhost' });
   }
 
-  return { round, seo: { title: 'Adu Mekanik Katla' } };
+  return { round, seo: { shouldBlockSearchIndex: true, title: 'Adu Mekanik Katla' } };
 };
 
 export const actions: Actions = {

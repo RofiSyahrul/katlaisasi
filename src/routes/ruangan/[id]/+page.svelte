@@ -1,27 +1,35 @@
 <script lang="ts">
-  import { createClient, type Client, LiveMap } from '@liveblocks/client';
+  import { createClient, type Client } from '@liveblocks/client';
   import { onDestroy, onMount } from 'svelte';
 
   import { browser } from '$app/environment';
+  import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
   import Popup from '$lib/components/Popup.svelte';
+  import Spinner from '$lib/components/Spinner.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
   import { userName } from '$lib/stores';
   import type { PageServerData } from './$types';
-  import Game from './components/Game.svelte';
+  import Game from './lib/components/Game.svelte';
+  import { setRoomContext } from './lib/liveblocks/context';
   import {
-    setRoomContext,
-    type Presence,
-    type RoomEvent,
-    type RoomStorage,
-    type RoomType,
-    type UserMeta
-  } from './room-context';
+    createInitialPresence,
+    initialGameState,
+    initialUsersMap
+  } from './lib/liveblocks/initials';
+  import type {
+    Presence,
+    RoomEvent,
+    RoomStorage,
+    RoomType,
+    UserMeta
+  } from './lib/liveblocks/types';
 
   export let data: PageServerData;
 
   let client: Client;
   let room: RoomType;
+
   let isAlreadyOpenedInOtherTab = false;
   let isPopupOpen = !$userName;
   let isReady = false;
@@ -49,16 +57,25 @@
     });
 
     room = client.enter<Presence, RoomStorage, UserMeta, RoomEvent>(roomID, {
-      initialPresence: { gameStatus: 'playing', userName: $userName },
-      initialStorage: { activeRound: 0, guesses: new LiveMap() }
+      initialPresence: createInitialPresence($userName),
+      initialStorage: {
+        gameState: initialGameState,
+        userStateMap: initialUsersMap
+      }
     });
 
     if (browser) {
-      room.getStorage().then(({ root }) => {
-        const activeRound = root.get('activeRound');
+      room.getStorage().then(async ({ root }) => {
+        const activeRound = root.get('gameState').get('activeRound');
         if (data.round !== activeRound) {
-          window.location.search = activeRound > 0 ? `?round=${activeRound}` : '';
-          return;
+          const url = $page.url;
+          if (activeRound > 0) {
+            url.searchParams.set('round', `${activeRound}`);
+          } else {
+            url.searchParams.delete('round');
+          }
+          await goto(url, { replaceState: true });
+          await invalidateAll();
         }
         isReady = true;
       });
@@ -85,10 +102,10 @@
     Ruangan <strong>{$page.params.id}</strong> udah dibuka di tab lain. Tolong buka di 1 tab aja
   </p>
 {:else}
-  {#if room && isReady}
+  {#if isReady}
     <Game isUserNameUpdated={isUserNameSaved} on:editUserName={() => (isPopupOpen = true)} />
   {:else}
-    <p>Loading...</p>
+    <Spinner label="Sedang memuat" size="100px" />
   {/if}
   <Popup isOpen={isPopupOpen} on:close={() => (isPopupOpen = false)}>
     {#if isPopupOpen}

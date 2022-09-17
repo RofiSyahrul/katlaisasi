@@ -60,7 +60,9 @@ export function getGameResult(guess: string, answer: string): GuessItem[] {
   for (const key in correctGuessIndexMap) {
     const index = correctGuessIndexMap[key];
     const [char] = key.split('::');
-    if (!answerCharIndicesMap[char].length) {
+    if (answerCharIndicesMap[char].length) {
+      answerCharIndicesMap[char].splice(0, 1);
+    } else {
       guessResult[index] = {
         char,
         status: 'wrong'

@@ -16,18 +16,24 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
-  import { enhance, type SubmitFunction } from '$app/forms';
+  import { applyAction, enhance, type SubmitFunction } from '$app/forms';
   import { page } from '$app/stores';
   import { REQUIRED_GUESS_LENGTH } from '$lib/constants/game';
   import type { GuessItem } from '$lib/types/game';
-  import type { SubmitGuessInvalidResponse, SubmitGuessSuccessResponse } from '../room-context';
+  import type { SubmitGuessInvalidResponse, SubmitGuessSuccessResponse } from '../../types';
 
-  export let isVictory = false;
+  export let isRoundFinished: boolean;
+  export let isSubmitted: boolean;
+  export let isVictory: boolean;
 
-  let wrongLetters: string[] = [];
-  let correctLetters: string[] = [];
-  let exactLetters: string[] = [];
+  export let wrongLetters: string[];
+  export let correctLetters: string[];
+  export let exactLetters: string[];
+
   let guess = '';
+  let isSubmitting = false;
+
+  $: disabledKeyboard = isSubmitted || isSubmitting;
 
   const dispatch = createEventDispatcher<KeyboardGameEvent>();
 
@@ -47,40 +53,24 @@
   }
 
   const submitFn: SubmitFunction<SubmitGuessSuccessResponse, SubmitGuessInvalidResponse> = () => {
-    return ({ result }) => {
+    isSubmitting = true;
+    return async ({ result }) => {
       if (result.type === 'success') {
         const guessResult = result.data?.guessResult || [];
-        if (guessResult.length !== REQUIRED_GUESS_LENGTH) return;
-
-        const newWrongLetters: string[] = [];
-        const newCorrectLetters: string[] = [];
-        const newExactLetters: string[] = [];
-
-        guessResult.forEach(({ char, status }) => {
-          switch (status) {
-            case 'exact': {
-              newExactLetters.push(char);
-              break;
-            }
-            case 'correct': {
-              newCorrectLetters.push(char);
-              break;
-            }
-            default: {
-              newWrongLetters.push(char);
-            }
-          }
-        });
-
-        wrongLetters = [...wrongLetters, ...newWrongLetters];
-        correctLetters = [...correctLetters, ...newCorrectLetters];
-        exactLetters = [...exactLetters, ...newExactLetters];
-
-        dispatch('get-guess-response', { guessResult });
-        guess = '';
+        if (guessResult.length === REQUIRED_GUESS_LENGTH) {
+          dispatch('get-guess-response', { guessResult });
+          guess = '';
+        }
+        isSubmitting = false;
+      } else if (result.type === 'invalid') {
+        isSubmitting = false;
+      } else {
+        await applyAction(result);
       }
     };
   };
+
+  $: isDisabledActionButton = isVictory || disabledKeyboard || isRoundFinished;
 
   $: getTileStatus = (letter: string): string => {
     if (exactLetters.includes(letter)) return 'exact';
@@ -91,7 +81,7 @@
 </script>
 
 <form
-  action={`/ruangan/${$page.params.id}?/submit`}
+  action={`/ruangan/${$page.params.id}?/submit&${$page.url.searchParams.toString()}`}
   class="keyboard"
   method="post"
   use:enhance={submitFn}
@@ -100,6 +90,7 @@
     {#each firstRowLetters as letter (letter)}
       <button
         class={`keyboard__tile keyboard__tile_${getTileStatus(letter)}`}
+        disabled={disabledKeyboard}
         type="button"
         on:click={handleTileClick}
       >
@@ -113,6 +104,7 @@
     {#each secondRowLetters as letter (letter)}
       <button
         class={`keyboard__tile keyboard__tile_${getTileStatus(letter)}`}
+        disabled={disabledKeyboard}
         type="button"
         on:click={handleTileClick}
       >
@@ -126,7 +118,7 @@
     <button
       class="keyboard__tile keyboard__tile_default
         keyboard__tile_small"
-      disabled={guess.length < REQUIRED_GUESS_LENGTH || isVictory}
+      disabled={guess.length < REQUIRED_GUESS_LENGTH || isDisabledActionButton}
       style:width="150%"
     >
       Enter
@@ -134,6 +126,7 @@
     {#each thirdRowLetters as letter (letter)}
       <button
         class={`keyboard__tile keyboard__tile_${getTileStatus(letter)}`}
+        disabled={disabledKeyboard}
         type="button"
         on:click={handleTileClick}
       >
@@ -142,7 +135,7 @@
     {/each}
     <button
       class="keyboard__tile keyboard__tile_default"
-      disabled={guess.length === 0 || isVictory}
+      disabled={guess.length === 0 || isDisabledActionButton}
       style:width="150%"
       type="button"
       on:click={handleBackspaceClick}
@@ -177,10 +170,12 @@
 
   .keyboard__tile {
     width: 100%;
+    min-height: unset;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     margin: 2px;
+    padding: unset;
     font-size: 1.8rem;
     line-height: 1.8rem;
     font-weight: bold;

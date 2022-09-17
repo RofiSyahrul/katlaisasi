@@ -3,12 +3,12 @@ import { DEFAULT_DESC, DEFAULT_IMAGE, DEFAULT_KEYWORD, DEFAULT_TITLE } from '$li
 import { setTheme } from '$lib/utils/theme';
 import type { LayoutServerLoad } from './$types';
 
-export const load: LayoutServerLoad = async ({ cookies, locals }) => {
+export const load: LayoutServerLoad = async ({ cookies, locals, url }) => {
   let initialTheme = cookies.get(THEME) as Theme;
 
   if (initialTheme !== 'dark' && initialTheme !== 'light') {
     initialTheme = 'system';
-    setTheme(initialTheme, cookies);
+    setTheme(initialTheme, cookies, url.hostname === 'localhost');
   }
 
   return {

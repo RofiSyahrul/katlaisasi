@@ -12,7 +12,11 @@ export const handle: Handle = async ({ event, resolve }) => {
     // if this is the first time the user has visited this app,
     // set a cookie so that we recognise them when they return
     userid = crypto.randomUUID();
-    event.cookies.set(USER_ID, userid, { maxAge: cookieMaxAge, path: '/' });
+    event.cookies.set(USER_ID, userid, {
+      maxAge: cookieMaxAge,
+      path: '/',
+      secure: event.url.hostname !== 'localhost'
+    });
   }
 
   event.locals.userid = userid;

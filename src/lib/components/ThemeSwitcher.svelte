@@ -22,7 +22,7 @@
   });
 
   function handleChangeTheme(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
-    setTheme(e.currentTarget.value as Theme);
+    setTheme(e.currentTarget.value as Theme, undefined, window.location.hostname === 'localhost');
   }
 </script>
 

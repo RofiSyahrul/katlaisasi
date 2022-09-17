@@ -12,9 +12,11 @@
   import type { GuessItem } from '$lib/types/game';
 
   export let guesses: GuessItem[][] = [];
-  export let isAdmin: boolean;
   export let isCurrentUser: boolean;
   export let isCurrentUserPlaying: boolean;
+  export let isHost: boolean;
+  export let isVictory: boolean;
+  export let submittedRow: number;
   export let userName: string;
 
   const dispatch = createEventDispatcher<CardEvent>();
@@ -29,15 +31,15 @@
 </script>
 
 <div class="card" class:card_current-user={isCurrentUser}>
-  <div class="card__title">
-    <h3 title={userName}>
+  <div class="card__header">
+    <h4 class="card__header__title" title={userName}>
       {userName || 'Unknown'}
-    </h3>
-    <div class="card__title__right">
-      {#if isAdmin}
-        <div title="Admin">
+    </h4>
+    <div class="card__header__right">
+      {#if isHost}
+        <div title="Host">
           <svg
-            aria-label="Admin"
+            aria-label="Host"
             fill="currentColor"
             focusable="false"
             height="32"
@@ -73,9 +75,17 @@
           {@const guess = guesses[guessIndex]?.[charIndex]}
           {@const char = guess?.char ?? defaultChar}
           {@const shouldShowChar = isCurrentUser || !isCurrentUserPlaying}
-          {@const status = guess && char && shouldShowChar ? guess.status : 'empty'}
-          <div class={`card__guess-tile card__guess-tile_${status}`}>
-            {shouldShowChar ? char : ''}
+          {@const shownChar = shouldShowChar ? char : ''}
+          <div
+            class={`card__guess-tile card__guess-tile_${
+              submittedRow === guessIndex && !isVictory
+                ? 'submitted'
+                : !char
+                ? 'empty'
+                : guess.status
+            }`}
+          >
+            {shownChar}
           </div>
         {/each}
       </div>
@@ -96,7 +106,7 @@
     border-width: 2px;
   }
 
-  .card__title {
+  .card__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -107,7 +117,7 @@
     border-bottom: 1px solid var(--color-border);
   }
 
-  .card__title h3 {
+  .card__header__title {
     margin: 0;
     flex: 1;
     overflow: hidden;
@@ -115,12 +125,12 @@
     white-space: nowrap;
   }
 
-  .card__title__right {
+  .card__header__right {
     display: flex;
     gap: 4px;
   }
 
-  .card__title__right button {
+  .card__header__right button {
     min-height: unset;
     height: 32px;
     width: 32px;
@@ -168,6 +178,11 @@
 
   .card__guess-tile_guessing {
     background-color: var(--color-bg-tile-guessing);
+  }
+
+  .card__guess-tile_submitted {
+    background-color: var(--color-bg-tile-guessing);
+    border: 1px solid var(--color-border);
   }
 
   .card__guess-tile_wrong {
