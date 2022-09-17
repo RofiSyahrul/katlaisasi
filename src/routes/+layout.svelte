@@ -1,10 +1,14 @@
+<script lang="ts" context="module">
+  const appleIconSizes = ['152', '144', '120', '114', '76', '72', '60', '57'];
+</script>
+
 <script lang="ts">
   import '../app.css';
 
   import { page } from '$app/stores';
   import { createPortal } from '$lib/actions/portal';
+  import Header from '$lib/components/Header.svelte';
   import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
-  import Header from '$lib/header/Header.svelte';
   import { theme, userName } from '$lib/stores';
   import type { LayoutData } from './$types';
 
@@ -43,8 +47,24 @@
 </script>
 
 <svelte:head>
+  <meta charset="utf-8" />
+  <meta httpequiv="X-UA-Compatible" content="IE=edge" />
+
   <meta name="color-scheme" content={$theme == 'system' ? 'light dark' : $theme} />
   <link rel="stylesheet" href={`/theme/${$theme}.css`} />
+
+  {#each appleIconSizes as size (size)}
+    <link
+      rel="apple-touch-icon"
+      sizes={`${size}x${size}`}
+      href={`/icons/apple-touch-icon-${size}x${size}.png`}
+    />
+  {/each}
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png" />
+  <link rel="icon" type="image/png" sizes="384x384" href="/icons/android-chrome-384x384.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:creator" content="@RofiSyahrul" />
@@ -73,7 +93,7 @@
 <ThemeSwitcher />
 <Header />
 
-<main>
+<main class:no-header-xs={$page.url.pathname.startsWith('/ruangan/')}>
   <slot />
 </main>
 
@@ -91,5 +111,11 @@
     max-width: 1024px;
     margin: 0 auto;
     box-sizing: border-box;
+  }
+
+  @media (max-width: 450px) {
+    main.no-header-xs {
+      height: 100vh;
+    }
   }
 </style>

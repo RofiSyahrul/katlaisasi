@@ -13,7 +13,6 @@
 </script>
 
 <section>
-  <h1>KATLAISASI</h1>
   <p>
     Adu mekanik <a href="https://katla.vercel.app" target="_blank"><strong>KATLA</strong></a> bersama
     teman/keluarga
@@ -48,13 +47,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex: 1;
     gap: 8px;
   }
 
   .welcome {
     gap: 16px;
   }
+
   .welcome > div:first-child {
     display: flex;
     flex-direction: column;
@@ -66,7 +65,6 @@
     gap: 4px;
   }
 
-  h1,
   h2,
   p {
     margin: 0;
