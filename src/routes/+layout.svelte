@@ -90,12 +90,13 @@
   {/if}
 </svelte:head>
 
-<ThemeSwitcher />
 <Header />
 
 <main class:no-header-xs={$page.url.pathname.startsWith('/ruangan/')}>
   <slot />
 </main>
+
+<ThemeSwitcher />
 
 <div use:createPortal />
 

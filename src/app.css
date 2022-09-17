@@ -1,4 +1,6 @@
-:root {
+:root,
+::before,
+::after {
   --font-family: -apple-system, system-ui, sans-serif, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
     Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
   --pure-white: #ffffff;
@@ -107,6 +109,20 @@ pre {
   overflow-x: auto;
 }
 
+input {
+  height: 40px;
+  border-radius: 4px;
+  padding: 0 8px;
+  outline: none;
+  background-color: var(--color-bg-body);
+  border: 2px solid var(--color-border);
+}
+
+input:focus,
+input:hover {
+  border-color: var(--color-primary);
+}
+
 input,
 button {
   font-size: inherit;
@@ -114,6 +130,10 @@ button {
 }
 
 button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   min-height: 40px;
   padding: 8px;
   cursor: pointer;
@@ -143,5 +163,11 @@ button:focus:not(:focus-visible) {
 @media (min-width: 720px) {
   h1 {
     font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  input {
+    width: 100%;
   }
 }

@@ -1,6 +1,9 @@
-:root {
+:root,
+::before,
+::after {
   --color-bg-body: var(--color-neutral-bright);
   --color-text-body: var(--color-neutral-dim);
+  --color-text-subtle: var(--color-neutral-dim2);
   --color-text-inverse: var(--color-neutral-bright);
 
   --color-primary: var(--color-primary-dim);

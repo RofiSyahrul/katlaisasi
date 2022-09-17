@@ -44,29 +44,11 @@
 </form>
 
 <style>
-  input {
-    height: 40px;
-    border-radius: 4px;
-    padding: 0 8px;
-    outline: none;
-    background-color: var(--color-bg-body);
-    border: 2px solid var(--color-border);
-  }
-
-  input:focus,
-  input:hover {
-    border-color: var(--color-primary);
-  }
-
-  @media screen and (max-width: 480px) {
+  @media (max-width: 480px) {
     form {
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
-    }
-
-    input {
-      width: 100%;
     }
 
     button {

@@ -22,7 +22,7 @@ const cachedAnswerMap = new Map<string, string>();
 export const load: PageServerLoad = async ({ cookies, locals, params, url }) => {
   const roomID = decode(params.id);
 
-  if (!/\d{4}/.test(roomID)) {
+  if (!/\d{5}/.test(roomID)) {
     throw error(404, 'Ruangan tidak ditemukan. Yo ndak tau kok tanya saya 🤷🏽');
   }
 

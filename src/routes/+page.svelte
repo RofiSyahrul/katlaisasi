@@ -2,6 +2,7 @@
   import { quintOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';
 
+  import RoomForm from '$lib/components/RoomForm.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
   import { userName } from '$lib/stores';
 
@@ -41,6 +42,12 @@
   {/if}
 </section>
 
+{#if $userName && !isUserNameFormShown}
+  <section class="room-form-section">
+    <RoomForm />
+  </section>
+{/if}
+
 <style>
   section {
     display: flex;
@@ -65,9 +72,14 @@
     gap: 4px;
   }
 
+  .room-form-section {
+    margin-top: 48px;
+  }
+
   h2,
   p {
     margin: 0;
+    text-align: center;
   }
 
   button {
