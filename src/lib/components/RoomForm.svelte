@@ -91,7 +91,7 @@
     font-weight: 700;
   }
 
-  .spinner-wrapper :global(label) {
+  .spinner-wrapper {
     position: absolute;
     top: 50%;
     left: 50%;

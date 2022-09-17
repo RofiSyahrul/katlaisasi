@@ -130,10 +130,6 @@ button {
 }
 
 button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
   min-height: 40px;
   padding: 8px;
   cursor: pointer;
