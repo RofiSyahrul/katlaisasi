@@ -36,6 +36,7 @@
 
   let guess = '';
   let isSubmitting = false;
+  let submitButton: HTMLButtonElement;
 
   $: disabledKeyboard = isSubmitted || isSubmitting;
 
@@ -76,6 +77,32 @@
   };
 
   $: isDisabledActionButton = !isPlaying || disabledKeyboard;
+
+  function handleKeydown(e: KeyboardEvent & { currentTarget: EventTarget & Window }) {
+    if (
+      disabledKeyboard ||
+      e.target instanceof HTMLInputElement ||
+      e.target instanceof HTMLTextAreaElement
+    ) {
+      return;
+    }
+
+    const key = e.key.toUpperCase();
+    if (/^[A-Z]$/.test(key) && guess.length < REQUIRED_GUESS_LENGTH && isPlaying) {
+      guess += key;
+      dispatch('change-guess', { guess });
+      return;
+    }
+
+    if (key === 'BACKSPACE' && !isDisabledActionButton) {
+      handleBackspaceClick();
+      return;
+    }
+
+    if (key === 'ENTER' && guess.length === REQUIRED_GUESS_LENGTH && !isDisabledActionButton) {
+      submitButton.click();
+    }
+  }
 
   $: getTileStatus = (letter: string): string => {
     if (exactLetters.includes(letter)) return 'exact';
@@ -125,6 +152,7 @@
         keyboard__tile_small"
       disabled={guess.length < REQUIRED_GUESS_LENGTH || isDisabledActionButton}
       style:width="150%"
+      bind:this={submitButton}
     >
       Enter
     </button>
@@ -152,6 +180,8 @@
 
   <input name="guess" type="hidden" bind:value={guess} />
 </form>
+
+<svelte:window on:keydown={handleKeydown} />
 
 <style>
   .keyboard {
