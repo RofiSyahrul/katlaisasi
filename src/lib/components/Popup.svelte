@@ -1,3 +1,9 @@
+<script lang="ts" context="module">
+  export type PopupEventMap = {
+    close: MouseEvent & { currentTarget: EventTarget & HTMLElement };
+  };
+</script>
+
 <script lang="ts">
   import { createEventDispatcher, onDestroy } from 'svelte';
 
@@ -5,10 +11,6 @@
   import { portal } from '$lib/actions/portal';
 
   type AnimationType = 'enter' | 'leave' | null;
-
-  type PopupEventMap = {
-    close: MouseEvent & { currentTarget: EventTarget & HTMLElement };
-  };
 
   export let isOpen = false;
 
@@ -53,7 +55,7 @@
   on:animationend={handleAnimationEnd}
 >
   <div class="popup__mask" on:click={(e) => dispatch('close', e)} />
-  <dialog class="popup__dialog" open={isShown}>
+  <dialog class="popup__dialog scrollable" open={isShown}>
     <slot />
   </dialog>
 </div>

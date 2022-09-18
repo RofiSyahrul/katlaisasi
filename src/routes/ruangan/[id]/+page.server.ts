@@ -5,7 +5,11 @@ import { MAX_ROUND_PER_ROOM } from '$lib/constants/game';
 import { decode, encode } from '$lib/utils/codec.server';
 import { generateEncodedAnswer, getGameResult } from '$lib/utils/game.server';
 import type { Actions, PageServerLoad } from './$types';
-import type { SubmitGuessInvalidResponse, SubmitGuessSuccessResponse } from './types';
+import type {
+  DefineAnswerSuccessResponse,
+  SubmitGuessInvalidResponse,
+  SubmitGuessSuccessResponse
+} from './types';
 
 function getRound(url: URL) {
   const round = Number(url.searchParams.get('round'));
@@ -18,6 +22,7 @@ function getKey(roomID: string, round: number) {
 }
 
 const cachedAnswerMap = new Map<string, string>();
+const cachedDefinitionsMap = new Map<string, string[]>();
 
 export const load: PageServerLoad = async ({ cookies, locals, params, url }) => {
   const roomID = decode(params.id);
@@ -50,6 +55,43 @@ export const load: PageServerLoad = async ({ cookies, locals, params, url }) => 
 };
 
 export const actions: Actions = {
+  'define-answer': async ({ cookies, params, url }) => {
+    const round = getRound(url);
+    const encodedAnswer = cookies.get(getKey(params.id, round));
+    if (!encodedAnswer) {
+      return invalid(400);
+    }
+
+    const answer = decode(encodedAnswer);
+    const response: DefineAnswerSuccessResponse = {
+      answer,
+      definitions: []
+    };
+
+    const definitionsFromCache = cachedDefinitionsMap.get(answer);
+    if (definitionsFromCache) {
+      response.definitions = definitionsFromCache;
+      return response;
+    }
+
+    try {
+      const data: Array<{ makna?: Array<{ definisi: string }> }> = await fetch(
+        `https://cdn.statically.io/gh/pveyes/makna/main/data/${answer}.json`
+      ).then((res) => res.json());
+
+      if (!Array.isArray(data)) return response;
+
+      for (const item of data) {
+        response.definitions.push(...(item.makna ?? []).map((maknaItem) => maknaItem.definisi));
+      }
+
+      cachedDefinitionsMap.set(answer, response.definitions);
+      return response;
+    } catch (error) {
+      console.error(`Failed to fetch definitions of "${answer}" from makna. Error: ${error}`);
+      return response;
+    }
+  },
   submit: async ({ cookies, locals, params, request, url }) => {
     const invalidResponse: SubmitGuessInvalidResponse = { message: '' };
 

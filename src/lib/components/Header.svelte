@@ -82,7 +82,7 @@
     align-items: center;
     padding: 0 1em;
     margin: 0;
-    color: var(--heading-color);
+    color: var(--color-neutral-dim0);
     font-weight: 700;
     font-size: 2rem;
     text-transform: uppercase;

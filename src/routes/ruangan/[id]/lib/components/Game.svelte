@@ -1,14 +1,18 @@
 <script lang="ts">
   import { LiveObject } from '@liveblocks/client';
+  import type { ActionResult } from '@sveltejs/kit';
   import { slide } from 'svelte/transition';
 
   import { browser } from '$app/environment';
   import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
+  import Popup from '$lib/components/Popup.svelte';
   import Spinner from '$lib/components/Spinner.svelte';
+  import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
   import { REQUIRED_GUESS_LENGTH, TOTAL_GUESS_ROW } from '$lib/constants/game';
   import { userName } from '$lib/stores';
   import type { GuessItem } from '$lib/types/game';
+  import type { DefineAnswerSuccessResponse } from '../../types';
   import { baseInitialUserState } from '../liveblocks/initials';
   import type { RowStatus, UserRoundStatus } from '../liveblocks/types';
   import { useGameState } from '../liveblocks/use-game-state';
@@ -32,6 +36,10 @@
   const myState = useMyState($self?.id);
 
   let isInitialLoad = true;
+  let answerAndDefinitions: DefineAnswerSuccessResponse | null = null;
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  let AnswerDefinitionsComponent: typeof import('./AnswerDefinitions.svelte').default | undefined;
+  let isAnswerDefinitionPopupOpen = false;
 
   let guessesByCurrentUser: GuessItem[][] = [];
   let guessResultCurrentRow: GuessItem[] = [];
@@ -161,7 +169,7 @@
       new LiveObject({
         activeRow: nextActiveRow,
         currentRowStatus: nextRowStatus,
-        guesses: myNextGuesses,
+        guesses: [...myNextGuesses],
         userRoundStatus: userLatestRoundStatus
       })
     );
@@ -222,6 +230,29 @@
     }));
   }
 
+  async function fetchAnswerAndDefinitions() {
+    const { pathname, searchParams } = $page.url;
+    const resource = `${pathname}?/define-answer&${searchParams.toString()}`;
+    const result: ActionResult<DefineAnswerSuccessResponse> = await fetch(resource, {
+      body: new FormData(),
+      headers: {
+        accept: 'application/json'
+      },
+      method: 'POST'
+    }).then((res) => res.json());
+
+    if (result.type !== 'success' || !result.data) return;
+
+    answerAndDefinitions = result.data;
+    if (!AnswerDefinitionsComponent) {
+      AnswerDefinitionsComponent = (await import('./AnswerDefinitions.svelte')).default;
+    }
+  }
+
+  $: if (browser && $gameState?.get('roundStatus') === 'finished') {
+    fetchAnswerAndDefinitions();
+  }
+
   function handleClickPlayAgain() {
     $gameState.update({ roundStatus: 'waiting-for-next-round' });
   }
@@ -239,6 +270,7 @@
         wrongLetters = [];
         correctLetters = [];
         exactLetters = [];
+        answerAndDefinitions = null;
 
         if (isHost) {
           $usersMap.forEach((userState) => {
@@ -262,7 +294,7 @@
   }
 </script>
 
-<div aria-live="polite" class="round-info">
+<section aria-live="polite" class="round-info">
   {#if isWaitingForNextRound || !$gameState}
     <Spinner label="Menunggu ronde berikutnya" />
   {:else}
@@ -279,9 +311,9 @@
       <p>Tunggu host</p>
     {/if}
   {/if}
-</div>
+</section>
 
-<div class="card-list">
+<section class="card-list scrollable">
   {#if $self}
     <Card
       on:editUserName
@@ -309,12 +341,27 @@
       {/if}
     {/each}
   {/if}
-</div>
+</section>
 
 {#if invalidGuessMessage}
-  <p class="invalid-guess" transition:slide>
+  <p class="game-description" transition:slide>
     {@html invalidGuessMessage}
   </p>
+{:else if answerAndDefinitions}
+  <section class="game-description">
+    <p>
+      Jawaban:
+      <strong style:text-transform="uppercase">
+        {answerAndDefinitions.answer}
+      </strong>
+    </p>
+    <button
+      on:click={() => (isAnswerDefinitionPopupOpen = true)}
+      style:background-color="var(--color-secondary)"
+    >
+      Lihat definisi
+    </button>
+  </section>
 {/if}
 
 <Keyboard
@@ -327,6 +374,38 @@
   {exactLetters}
   {wrongLetters}
 />
+
+<Popup isOpen={isAnswerDefinitionPopupOpen} on:close={() => (isAnswerDefinitionPopupOpen = false)}>
+  {#if answerAndDefinitions && AnswerDefinitionsComponent}
+    <svelte:component this={AnswerDefinitionsComponent} {...answerAndDefinitions}>
+      <a
+        slot="kbbi-link"
+        let:kbbiURL
+        let:kbbiLinkLabel
+        aria-label={kbbiLinkLabel}
+        href={kbbiURL}
+        target="_blank"
+        title={kbbiLinkLabel}
+      >
+        <VisuallyHidden>
+          {kbbiLinkLabel}
+        </VisuallyHidden>
+        <svg
+          focusable="false"
+          aria-hidden="true"
+          fill="currentColor"
+          height="24px"
+          viewBox="0 0 24 24"
+          width="24px"
+        >
+          <path
+            d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"
+          />
+        </svg>
+      </a>
+    </svelte:component>
+  {/if}
+</Popup>
 
 <style>
   .round-info {
@@ -352,14 +431,19 @@
     gap: 12px;
     width: 100%;
     height: max(calc(100% - 250px), 250px);
-    padding: 4px;
-    overflow: auto;
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border);
   }
 
-  .invalid-guess {
+  .game-description {
     width: 100%;
     margin: 12px 0 0;
     text-align: center;
+  }
+
+  .game-description p {
+    margin: 0 0 8px;
   }
 
   button {

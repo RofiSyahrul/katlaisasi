@@ -20,6 +20,12 @@ module.exports = {
       rules: {
         'no-undef': 0
       }
+    },
+    {
+      files: ['*.server.ts'],
+      rules: {
+        'no-console': 0
+      }
     }
   ],
   settings: {

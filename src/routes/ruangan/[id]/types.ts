@@ -7,3 +7,8 @@ export type SubmitGuessSuccessResponse = {
 export type SubmitGuessInvalidResponse = {
   message: string;
 };
+
+export type DefineAnswerSuccessResponse = {
+  answer: string;
+  definitions: string[];
+};

@@ -3,16 +3,6 @@
 ::after {
   --font-family: -apple-system, system-ui, sans-serif, 'Segoe UI', Helvetica Neue, Helvetica, Roboto,
     Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
-  --pure-white: #ffffff;
-  --primary-color: #b9c6d2;
-  --secondary-color: #d0dde9;
-  --tertiary-color: #edf0f8;
-  --accent-color: #ff3e00;
-  --heading-color: rgba(0, 0, 0, 0.7);
-  --text-color: #444444;
-  --background-without-opacity: rgba(255, 255, 255, 0.7);
-  --column-width: 42rem;
-  --column-margin-top: 4rem;
 
   --color-neutral-dim0: #0f172a;
   --color-neutral-bright0: #f1f5f9;
@@ -148,12 +138,33 @@ button:disabled {
   filter: opacity(30%);
 }
 
-button:hover:not(:disabled) {
-  filter: brightness(80%);
-}
-
 button:focus:not(:focus-visible) {
   outline: none;
+}
+
+.scrollable {
+  overflow: auto;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 12px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: var(--color-bg-body);
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: var(--color-primary);
+}
+
+button:hover:not(:disabled),
+.scrollable::-webkit-scrollbar-thumb:hover {
+  filter: brightness(80%);
 }
 
 @media (min-width: 720px) {
