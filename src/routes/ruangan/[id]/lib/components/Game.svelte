@@ -55,6 +55,7 @@
 
   $: if (isUserNameUpdated) {
     presence.update((prev) => ({ ...prev, userName: $userName }));
+    $myState.set('userName', $userName);
     isUserNameUpdated = false;
   }
 
@@ -170,6 +171,7 @@
         activeRow: nextActiveRow,
         currentRowStatus: nextRowStatus,
         guesses: [...myNextGuesses],
+        userName: $presence.userName,
         userRoundStatus: userLatestRoundStatus
       })
     );
@@ -274,7 +276,7 @@
 
         if (isHost) {
           $usersMap.forEach((userState) => {
-            userState.update({ ...baseInitialUserState });
+            userState.update({ ...baseInitialUserState, userName: userState.get('userName') });
           });
 
           $gameState.update({

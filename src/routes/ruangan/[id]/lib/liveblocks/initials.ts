@@ -14,6 +14,7 @@ export const baseInitialUserState: UserState = {
   activeRow: 0,
   currentRowStatus: 'guessing',
   guesses: [],
+  userName: '',
   userRoundStatus: 'playing'
 };
 

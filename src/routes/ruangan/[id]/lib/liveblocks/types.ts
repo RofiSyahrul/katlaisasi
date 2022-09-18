@@ -22,7 +22,7 @@ export type GameState = {
 
 export type GameStateLiveObject = LiveObject<GameState>;
 
-export type UserState = Pick<Presence, 'activeRow' | 'currentRowStatus' | 'userRoundStatus'> & {
+export type UserState = Presence & {
   guesses: GuessItem[][];
 };
 
