@@ -29,6 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
     "@vitest/coverage-c8": "^0.23.2",
+    "autoprefixer": "^10.4.11",
     "cosmiconfig-typescript-loader": "^4.0.0",
     "esbuild": "^0.15.7",
     "esbuild-register": "^3.3.3",
