@@ -96,11 +96,10 @@
   }
 
   let isAllUsersSubmittedCurrentRow = false;
-  let isAllUsersVictory = false;
   $: if ($presence && $gameState) {
     if ($presence.currentRowStatus !== 'submitted') {
       isAllUsersSubmittedCurrentRow = false;
-    } else if ($presence.activeRow < $gameState.get('activeRow') || !$others) {
+    } else if ($presence.activeRow < $gameState.get('activeRow') || $others?.count === 0) {
       isAllUsersSubmittedCurrentRow = true;
     } else if ($others) {
       isAllUsersSubmittedCurrentRow = [...$others].every((other) => {
@@ -112,26 +111,6 @@
         );
       });
     }
-
-    if ($presence.userRoundStatus !== 'victory') {
-      isAllUsersVictory = false;
-    } else if ($others) {
-      isAllUsersVictory = [...$others].every(
-        (other) => other.presence?.userRoundStatus === 'victory'
-      );
-    } else {
-      isAllUsersVictory = true;
-    }
-  }
-
-  $: if ($gameState) console.log({ roundStatus: $gameState.get('roundStatus'), isAllUsersVictory });
-
-  $: if (
-    $gameState?.get('roundStatus') === 'playing' &&
-    (isAllUsersVictory || $gameState?.get('activeRow') >= TOTAL_GUESS_ROW)
-  ) {
-    $gameState.set('roundStatus', 'finished');
-    isAllUsersVictory = false;
   }
 
   $: if (
@@ -192,6 +171,27 @@
   }
 
   $: if ($myState) guessesByCurrentUser = $myState.get('guesses');
+
+  let isAllUsersVictory = false;
+  $: if ($presence && $gameState) {
+    if ($presence.userRoundStatus !== 'victory') {
+      isAllUsersVictory = false;
+    } else if ($others?.count > 0) {
+      isAllUsersVictory = [...$others].every(
+        (other) => other.presence?.userRoundStatus === 'victory'
+      );
+    } else {
+      isAllUsersVictory = true;
+    }
+  }
+
+  $: if (
+    $gameState?.get('roundStatus') === 'playing' &&
+    (isAllUsersVictory || $gameState?.get('activeRow') >= TOTAL_GUESS_ROW)
+  ) {
+    $gameState.set('roundStatus', 'finished');
+    isAllUsersVictory = false;
+  }
 
   function handleChangeGuess(e: CustomEvent<KeyboardGameEvent['change-guess']>) {
     const { guess } = e.detail;
