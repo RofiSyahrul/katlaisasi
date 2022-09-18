@@ -50,9 +50,6 @@ export const load: PageServerLoad = async ({ cookies, locals, params, url }) => 
 };
 
 export const actions: Actions = {
-  'reset-game': () => {
-    //
-  },
   submit: async ({ cookies, locals, params, request, url }) => {
     const invalidResponse: SubmitGuessInvalidResponse = { message: '' };
 
@@ -61,7 +58,7 @@ export const actions: Actions = {
     const guess = form.get('guess')?.toString().toLowerCase() ?? '';
 
     if (!words.includes(guess)) {
-      invalidResponse.message = `${guess.toUpperCase()} tidak ada di dalam KBBI`;
+      invalidResponse.message = `<strong>${guess.toUpperCase()}</strong> ga ada di KBBI`;
       return invalid(400, invalidResponse);
     }
 

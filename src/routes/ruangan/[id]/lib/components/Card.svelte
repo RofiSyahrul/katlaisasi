@@ -94,6 +94,41 @@
 </div>
 
 <style>
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+
+    20%,
+    80% {
+      transform: translate3d(2px, 0, 0);
+    }
+
+    30%,
+    50%,
+    70% {
+      transform: translate3d(-4px, 0, 0);
+    }
+
+    40%,
+    60% {
+      transform: translate3d(4px, 0, 0);
+    }
+  }
+
+  @keyframes flip {
+    0% {
+      transform: rotateX(0);
+    }
+    50% {
+      transform: rotateX(-90deg);
+    }
+    100% {
+      transform: rotateX(0);
+    }
+  }
+
   .card {
     width: 100%;
     background-color: var(--color-bg-body);
@@ -142,6 +177,7 @@
     gap: 6px;
     width: 100%;
     padding: 4px;
+    user-select: none;
   }
 
   .card__guess-row {
@@ -174,9 +210,11 @@
   .card__guess-tile_empty {
     background-color: var(--color-bg-tile-empty);
     border: 1px solid var(--color-border);
+    transition: background-color 50ms ease-in-out;
   }
 
-  .card__guess-tile_guessing {
+  .card__guess-tile_guessing,
+  .card__guess-tile_invalid {
     background-color: var(--color-bg-tile-guessing);
   }
 
@@ -195,5 +233,16 @@
 
   .card__guess-tile_exact {
     background-color: var(--color-bg-tile-exact);
+  }
+
+  .card__guess-tile_wrong,
+  .card__guess-tile_correct,
+  .card__guess-tile_exact {
+    transition: background-color 0ms linear 300ms;
+    animation: flip 800ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  .card__guess-tile_invalid {
+    animation: shake 800ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   }
 </style>

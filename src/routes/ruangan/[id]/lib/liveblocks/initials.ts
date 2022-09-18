@@ -17,7 +17,7 @@ export const baseInitialUserState: UserState = {
   userRoundStatus: 'playing'
 };
 
-export const initialUserState = new LiveObject<UserState>({ ...baseInitialUserState });
+export const initialUserState = new LiveObject<UserState>({ ...baseInitialUserState, guesses: [] });
 
 export function createInitialPresence(userName: string): Presence {
   return {

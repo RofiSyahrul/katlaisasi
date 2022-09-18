@@ -1,4 +1,4 @@
-export type GuessStatus = 'guessing' | 'wrong' | 'correct' | 'exact';
+export type GuessStatus = 'guessing' | 'wrong' | 'correct' | 'exact' | 'invalid';
 
 export type GuessItem = {
   char: string;

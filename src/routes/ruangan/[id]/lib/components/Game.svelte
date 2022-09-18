@@ -1,5 +1,6 @@
 <script lang="ts">
   import { LiveObject } from '@liveblocks/client';
+  import { slide } from 'svelte/transition';
 
   import { browser } from '$app/environment';
   import { goto, invalidateAll } from '$app/navigation';
@@ -34,6 +35,7 @@
 
   let guessesByCurrentUser: GuessItem[][] = [];
   let guessResultCurrentRow: GuessItem[] = [];
+  let invalidGuessMessage = '';
 
   let wrongLetters: string[] = [];
   let correctLetters: string[] = [];
@@ -122,6 +124,8 @@
     }
   }
 
+  $: if ($gameState) console.log({ roundStatus: $gameState.get('roundStatus'), isAllUsersVictory });
+
   $: if (
     $gameState?.get('roundStatus') === 'playing' &&
     (isAllUsersVictory || $gameState?.get('activeRow') >= TOTAL_GUESS_ROW)
@@ -191,6 +195,7 @@
 
   function handleChangeGuess(e: CustomEvent<KeyboardGameEvent['change-guess']>) {
     const { guess } = e.detail;
+    invalidGuessMessage = '';
     guessesByCurrentUser[$presence.activeRow] = guess.split('').map<GuessItem>((char) => ({
       char,
       status: 'guessing'
@@ -208,6 +213,15 @@
     presence.update((prev) => ({ ...prev, currentRowStatus: 'submitted' }));
   }
 
+  function handleInvalidGuess(e: CustomEvent<KeyboardGameEvent['invalid-guess']>) {
+    const { guess, message } = e.detail;
+    invalidGuessMessage = message;
+    guessesByCurrentUser[$presence.activeRow] = guess.split('').map<GuessItem>((char) => ({
+      char,
+      status: 'invalid'
+    }));
+  }
+
   function handleClickPlayAgain() {
     $gameState.update({ roundStatus: 'waiting-for-next-round' });
   }
@@ -222,13 +236,13 @@
     goto(url, { replaceState: true })
       .then(invalidateAll)
       .then(() => {
-        if (isHost) {
-          wrongLetters = [];
-          correctLetters = [];
-          exactLetters = [];
+        wrongLetters = [];
+        correctLetters = [];
+        exactLetters = [];
 
+        if (isHost) {
           $usersMap.forEach((userState) => {
-            userState.update(baseInitialUserState);
+            userState.update({ ...baseInitialUserState });
           });
 
           $gameState.update({
@@ -297,12 +311,18 @@
   {/if}
 </div>
 
+{#if invalidGuessMessage}
+  <p class="invalid-guess" transition:slide>
+    {@html invalidGuessMessage}
+  </p>
+{/if}
+
 <Keyboard
   on:change-guess={handleChangeGuess}
   on:get-guess-response={handleGetGuessResponse}
-  isRoundFinished={$gameState?.get('roundStatus') === 'finished'}
+  on:invalid-guess={handleInvalidGuess}
+  isPlaying={$presence.userRoundStatus === 'playing'}
   isSubmitted={$presence.currentRowStatus === 'submitted'}
-  isVictory={$presence.userRoundStatus === 'victory'}
   {correctLetters}
   {exactLetters}
   {wrongLetters}
@@ -334,6 +354,12 @@
     height: max(calc(100% - 250px), 250px);
     padding: 4px;
     overflow: auto;
+  }
+
+  .invalid-guess {
+    width: 100%;
+    margin: 12px 0 0;
+    text-align: center;
   }
 
   button {

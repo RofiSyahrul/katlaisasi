@@ -10,6 +10,10 @@
     'get-guess-response': {
       guessResult: GuessItem[];
     };
+    'invalid-guess': {
+      guess: string;
+      message: string;
+    };
   };
 </script>
 
@@ -18,13 +22,13 @@
 
   import { applyAction, enhance, type SubmitFunction } from '$app/forms';
   import { page } from '$app/stores';
+  import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
   import { REQUIRED_GUESS_LENGTH } from '$lib/constants/game';
   import type { GuessItem } from '$lib/types/game';
   import type { SubmitGuessInvalidResponse, SubmitGuessSuccessResponse } from '../../types';
 
-  export let isRoundFinished: boolean;
+  export let isPlaying: boolean;
   export let isSubmitted: boolean;
-  export let isVictory: boolean;
 
   export let wrongLetters: string[];
   export let correctLetters: string[];
@@ -38,7 +42,7 @@
   const dispatch = createEventDispatcher<KeyboardGameEvent>();
 
   function handleTileClick(e: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
-    if (guess.length < REQUIRED_GUESS_LENGTH && !isVictory) {
+    if (guess.length < REQUIRED_GUESS_LENGTH && isPlaying) {
       const letter = e.currentTarget.innerText;
       guess += letter;
       dispatch('change-guess', { guess });
@@ -63,6 +67,7 @@
         }
         isSubmitting = false;
       } else if (result.type === 'invalid') {
+        dispatch('invalid-guess', { guess, message: result.data?.message ?? '' });
         isSubmitting = false;
       } else {
         await applyAction(result);
@@ -70,7 +75,7 @@
     };
   };
 
-  $: isDisabledActionButton = isVictory || disabledKeyboard || isRoundFinished;
+  $: isDisabledActionButton = !isPlaying || disabledKeyboard;
 
   $: getTileStatus = (letter: string): string => {
     if (exactLetters.includes(letter)) return 'exact';
@@ -140,6 +145,7 @@
       type="button"
       on:click={handleBackspaceClick}
     >
+      <VisuallyHidden>Backspace</VisuallyHidden>
       ⌫
     </button>
   </div>
@@ -150,7 +156,7 @@
 <style>
   .keyboard {
     position: absolute;
-    bottom: 56px;
+    bottom: 24px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
