@@ -186,7 +186,7 @@
 <style>
   .keyboard {
     position: absolute;
-    bottom: 24px;
+    bottom: 12px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;

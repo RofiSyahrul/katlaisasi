@@ -22,6 +22,7 @@
   import { useSelf } from '../liveblocks/use-self';
   import { useUsersMap } from '../liveblocks/use-users-map';
   import Card from './Card.svelte';
+  import InviteButton from './InviteButton.svelte';
   import Keyboard, { type KeyboardGameEvent } from './Keyboard.svelte';
   import { splitLettersFromGuess } from './utils';
 
@@ -315,6 +316,10 @@
   {/if}
 </section>
 
+<section class="invite-others">
+  <InviteButton />
+</section>
+
 <section class="card-list scrollable">
   {#if $self}
     <Card
@@ -410,16 +415,26 @@
 </Popup>
 
 <style>
-  .round-info {
-    position: absolute;
-    bottom: calc(100% - 8px);
-    left: 20px;
+  .round-info,
+  .invite-others {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+
+  .round-info {
+    position: absolute;
+    bottom: calc(100% - 8px);
+    left: 20px;
     gap: 4px;
     height: 48px;
+  }
+
+  .invite-others {
+    height: 38px;
+    width: fit-content;
+    margin: -16px auto 0;
   }
 
   .round-info * {
@@ -457,6 +472,14 @@
   @media (max-width: 450px) {
     .round-info {
       position: static;
+    }
+
+    .invite-others {
+      margin-top: 0;
+    }
+
+    .card-list {
+      height: max(calc(100% - 310px), 250px);
     }
   }
 </style>
