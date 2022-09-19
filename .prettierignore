@@ -6,6 +6,7 @@ node_modules
 .env
 .env.*
 !.env.example
+/static/~partytown
 /src/lib/constants/room-ids.server.ts
 /src/lib/constants/words.server.ts
 

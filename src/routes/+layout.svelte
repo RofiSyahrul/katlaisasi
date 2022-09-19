@@ -1,11 +1,32 @@
 <script lang="ts" context="module">
   const appleIconSizes = ['152', '144', '120', '114', '76', '72', '60', '57'];
+
+  function loadScript(params: { partytown?: boolean; src?: string; script?: string }): string {
+    const partytownType = params.partytown ? ' type="text/partytown"' : '';
+    if (params.script) {
+      return `<scr` + `ipt${partytownType}>${params.script}</scr` + `ipt>`;
+    }
+
+    if (params.src) {
+      return `<scr` + `ipt src="${params.src}"${partytownType}></scr` + `ipt>`;
+    }
+
+    return '';
+  }
+
+  function loadScripts(...args: Parameters<typeof loadScript>[0][]): string {
+    return args.map(loadScript).join('\n');
+  }
 </script>
 
 <script lang="ts">
   import '../app.css';
 
+  import { partytownSnippet } from '@builder.io/partytown/integration';
+
+  import { dev } from '$app/environment';
   import { page } from '$app/stores';
+  import { PUBLIC_GA4_ID } from '$env/static/public';
   import { createPortal } from '$lib/actions/portal';
   import Header from '$lib/components/Header.svelte';
   import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
@@ -16,6 +37,21 @@
 
   $theme = data.initialTheme;
   $userName = data.userName;
+
+  const partytown = partytownSnippet({
+    debug: dev,
+    forward: ['dataLayer.push', '__tag_assistant_forwarder'],
+    resolveUrl(url, location) {
+      if (url.host === 'www.googletagmanager.com' && url.pathname.startsWith('/debug')) {
+        const resolvedURL = new URL(
+          `/proxy?forward=${encodeURIComponent(url.href)}`,
+          location.href
+        );
+        return resolvedURL;
+      }
+      return url;
+    }
+  });
 
   let description: string,
     image = data.seo.image,
@@ -88,6 +124,17 @@
   {#if shouldBlockSearchIndex}
     <meta name="robots" content="noindex" />
   {/if}
+
+  {@html loadScripts(
+    { script: partytown },
+    { partytown: true, src: `https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA4_ID}` },
+    {
+      partytown: true,
+      script:
+        `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}` +
+        `gtag('js', new Date()); gtag('config', '${PUBLIC_GA4_ID}');`
+    }
+  )}
 </svelte:head>
 
 <Header />

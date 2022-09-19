@@ -10,7 +10,10 @@
     "format": "prettier --write .",
     "fetch-words": "node -r esbuild-register scripts/fetch-words.ts",
     "lint": "prettier --check . && eslint .",
+    "partytown": "partytown copylib static/~partytown",
     "pre-commit": "lint-staged && yarn test --changed origin/main",
+    "predev": "yarn partytown",
+    "prebuild": "yarn partytown",
     "prepare": "husky install",
     "preview": "vite preview",
     "test": "vitest run",
@@ -52,6 +55,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@builder.io/partytown": "^0.7.0",
     "@liveblocks/client": "^0.17.11",
     "@liveblocks/node": "^0.17.11",
     "fast-deep-equal": "^3.1.3"
