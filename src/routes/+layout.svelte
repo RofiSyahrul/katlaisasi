@@ -17,6 +17,47 @@
   function loadScripts(...args: Parameters<typeof loadScript>[0][]): string {
     return args.map(loadScript).join('\n');
   }
+
+  const darkStyles = `:root, ::before, ::after {
+--color-bg-body: var(--color-neutral-dim);
+--color-text-body: var(--color-neutral-bright);
+--color-text-subtle: var(--color-neutral-bright2);
+--color-text-inverse: var(--color-neutral-dim);
+
+--color-primary: var(--color-primary-bright);
+--color-secondary: var(--color-secondary-bright);
+--color-danger: var(--color-danger-bright);
+
+--color-border: var(--color-neutral-dim1);
+}`;
+
+  const lightStyles = `:root, ::before, ::after {
+--color-bg-body: var(--color-neutral-bright);
+--color-text-body: var(--color-neutral-dim);
+--color-text-subtle: var(--color-neutral-dim2);
+--color-text-inverse: var(--color-neutral-bright);
+
+--color-primary: var(--color-primary-dim);
+--color-secondary: var(--color-secondary-dim);
+--color-danger: var(--color-danger-dim);
+
+--color-border: var(--color-neutral-bright1);
+}`;
+
+  const systemStyles = `${lightStyles} @media (prefer-color-scheme: dark) {${darkStyles}}`;
+
+  function getStylesheet(theme: Theme) {
+    let styles = systemStyles;
+    switch (theme) {
+      case 'dark':
+        styles = darkStyles;
+        break;
+      case 'light':
+        styles = lightStyles;
+        break;
+    }
+    return `<sty` + `le data-theme="${theme}">${styles.replace(/(\n|\t)/g, '')}</sty` + `le>`;
+  }
 </script>
 
 <script lang="ts">
@@ -87,7 +128,8 @@
   <meta httpequiv="X-UA-Compatible" content="IE=edge" />
 
   <meta name="color-scheme" content={$theme == 'system' ? 'light dark' : $theme} />
-  <link rel="stylesheet" href={`/theme/${$theme}.css`} />
+  {@html getStylesheet($theme)}
+  <!-- <link rel="stylesheet" href={`/theme/${$theme}.css`} /> -->
 
   {#each appleIconSizes as size (size)}
     <link
