@@ -1,6 +1,7 @@
 <script lang="ts">
   import { LiveObject } from '@liveblocks/client';
   import type { ActionResult } from '@sveltejs/kit';
+  import { onDestroy, onMount } from 'svelte';
   import { slide } from 'svelte/transition';
 
   import { browser } from '$app/environment';
@@ -10,8 +11,10 @@
   import Spinner from '$lib/components/Spinner.svelte';
   import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
   import { REQUIRED_GUESS_LENGTH, TOTAL_GUESS_ROW } from '$lib/constants/game';
+  import { ONE_MINUTE_IN_SECONDS, ONE_SECOND_IN_MS } from '$lib/constants/time';
   import { userName } from '$lib/stores';
   import type { GuessItem } from '$lib/types/game';
+  import Timer from '$lib/utils/timer';
   import type { DefineAnswerSuccessResponse } from '../../types';
   import { baseInitialUserState } from '../liveblocks/initials';
   import type { RowStatus, UserRoundStatus } from '../liveblocks/types';
@@ -53,6 +56,28 @@
   let newWrongLetters: string[] = [];
   let newCorrectLetters: string[] = [];
   let newExactLetters: string[] = [];
+
+  const extraSecondsInactivity = 15;
+  let isInactivityPopupOpen = false;
+  let inactivityCountDown = extraSecondsInactivity;
+  let inactivityIntervalTimer: ReturnType<typeof setInterval>;
+
+  const inactivityCountDownTimer = new Timer(async () => {
+    isInactivityPopupOpen = false;
+    await goto('/', { replaceState: true });
+  }, extraSecondsInactivity * ONE_SECOND_IN_MS);
+
+  const maximumMinutesInactivity = 2;
+  const inactivityTimeout = maximumMinutesInactivity * ONE_MINUTE_IN_SECONDS * ONE_SECOND_IN_MS;
+
+  const inactivityTimer = new Timer(() => {
+    isInactivityPopupOpen = true;
+    inactivityCountDownTimer.init();
+    inactivityIntervalTimer = setInterval(() => {
+      inactivityCountDown -= 1;
+      if (inactivityCountDown === 0) clearInterval(inactivityIntervalTimer);
+    }, ONE_SECOND_IN_MS);
+  }, inactivityTimeout);
 
   $: if (isUserNameUpdated) {
     presence.update((prev) => ({ ...prev, userName: $userName }));
@@ -142,14 +167,18 @@
     let nextRowStatus: RowStatus = 'submitted';
     let userLatestRoundStatus: UserRoundStatus = 'playing';
 
+    inactivityTimer.reset();
+
     presence.update((prev) => {
       prevActiveRow = prev.activeRow;
       nextActiveRow = prev.activeRow + 1;
       const isVictory = guessResultCurrentRow.every((guess) => guess.status === 'exact');
 
       if (isVictory) {
+        inactivityTimer.destroy();
         userLatestRoundStatus = 'victory';
       } else if (nextActiveRow > TOTAL_GUESS_ROW) {
+        inactivityTimer.destroy();
         userLatestRoundStatus = 'defeat';
       } else {
         nextRowStatus = 'guessing';
@@ -205,6 +234,7 @@
   }
 
   function handleChangeGuess(e: CustomEvent<KeyboardGameEvent['change-guess']>) {
+    inactivityTimer.reset();
     const { guess } = e.detail;
     invalidGuessMessage = '';
     guessesByCurrentUser[$presence.activeRow] = guess.split('').map<GuessItem>((char) => ({
@@ -214,6 +244,7 @@
   }
 
   function handleGetGuessResponse(e: CustomEvent<KeyboardGameEvent['get-guess-response']>) {
+    inactivityTimer.destroy();
     const { guessResult } = e.detail;
     const splitted = splitLettersFromGuess(guessResult);
 
@@ -225,6 +256,7 @@
   }
 
   function handleInvalidGuess(e: CustomEvent<KeyboardGameEvent['invalid-guess']>) {
+    inactivityTimer.reset();
     const { guess, message } = e.detail;
     invalidGuessMessage = message;
     guessesByCurrentUser[$presence.activeRow] = guess.split('').map<GuessItem>((char) => ({
@@ -253,11 +285,20 @@
   }
 
   $: if (browser && $gameState?.get('roundStatus') === 'finished') {
+    inactivityTimer.destroy();
     fetchAnswerAndDefinitions();
   }
 
   function handleClickPlayAgain() {
     $gameState.update({ roundStatus: 'waiting-for-next-round' });
+  }
+
+  function cancelInactivity() {
+    isInactivityPopupOpen = false;
+    inactivityCountDown = extraSecondsInactivity;
+    clearInterval(inactivityIntervalTimer);
+    inactivityCountDownTimer.destroy();
+    inactivityTimer.reset();
   }
 
   $: isCurrentUserPlaying = $presence.userRoundStatus === 'playing';
@@ -274,10 +315,16 @@
         correctLetters = [];
         exactLetters = [];
         answerAndDefinitions = null;
+        isAnswerDefinitionPopupOpen = false;
+        inactivityTimer.reset();
 
         if (isHost) {
           $usersMap.forEach((userState) => {
-            userState.update({ ...baseInitialUserState, userName: userState.get('userName') });
+            userState.update({
+              ...baseInitialUserState,
+              guesses: [],
+              userName: userState.get('userName')
+            });
           });
 
           $gameState.update({
@@ -295,6 +342,16 @@
         }));
       });
   }
+
+  onMount(() => {
+    inactivityTimer.init();
+  });
+
+  onDestroy(() => {
+    inactivityTimer.destroy();
+    inactivityCountDownTimer.destroy();
+    clearInterval(inactivityIntervalTimer);
+  });
 </script>
 
 <section aria-live="polite" class="round-info">
@@ -414,6 +471,20 @@
   {/if}
 </Popup>
 
+<Popup isOpen={isInactivityPopupOpen}>
+  <div class="inactivity">
+    <h4 class="inactivity__description">
+      Kamu sudah tidak aktif dalam
+      {maximumMinutesInactivity} menit.
+    </h4>
+    <p class="inactivity__count-down">
+      <strong>{inactivityCountDown}</strong>
+      detik lagi kamu akan dikeluarkan dari ruangan <strong>{$page.params.id}</strong> ini
+    </p>
+    <button class="inactivity__cancel" on:click={cancelInactivity}> Mau aktif lagi 🥺 </button>
+  </div>
+</Popup>
+
 <style>
   .round-info,
   .invite-others {
@@ -461,6 +532,24 @@
 
   .game-description p {
     margin: 0 0 8px;
+  }
+
+  .inactivity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .inactivity * {
+    margin: 0;
+    text-align: center;
+  }
+
+  .inactivity__cancel {
+    min-height: 48px;
+    padding: 12px;
   }
 
   button {
