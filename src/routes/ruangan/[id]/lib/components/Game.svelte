@@ -4,7 +4,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { slide } from 'svelte/transition';
 
-  import { browser } from '$app/environment';
+  import { browser, dev } from '$app/environment';
   import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
   import Popup from '$lib/components/Popup.svelte';
@@ -29,6 +29,7 @@
   import Keyboard, { type KeyboardGameEvent } from './Keyboard.svelte';
   import { splitLettersFromGuess } from './utils';
 
+  export let hostID: string;
   export let isUserNameUpdated = false;
 
   const others = useOthers();
@@ -67,7 +68,7 @@
     await goto('/', { replaceState: true });
   }, extraSecondsInactivity * ONE_SECOND_IN_MS);
 
-  const maximumMinutesInactivity = 2;
+  const maximumMinutesInactivity = dev ? 10 : 2;
   const inactivityTimeout = maximumMinutesInactivity * ONE_MINUTE_IN_SECONDS * ONE_SECOND_IN_MS;
 
   const inactivityTimer = new Timer(() => {
@@ -118,16 +119,24 @@
   let isHost = false;
   let hostConnectionID = 0;
   $: if ($self) {
-    if (!$others) isHost = true;
+    if (!$others || $self.id === hostID) {
+      isHost = true;
+      hostConnectionID = $self.connectionId;
+    } else {
+      const myConnectionID = $self.connectionId;
+      let minimumConnectionID = myConnectionID;
+      $others.toArray().some((other) => {
+        if (other.id === hostID) {
+          minimumConnectionID = other.connectionId;
+          return true;
+        }
+        if (other.connectionId < minimumConnectionID) minimumConnectionID = other.connectionId;
+        return false;
+      });
 
-    const myConnectionID = $self.connectionId;
-    let minimumConnectionID = myConnectionID;
-    $others.toArray().forEach((other) => {
-      if (other.connectionId < minimumConnectionID) minimumConnectionID = other.connectionId;
-    });
-
-    isHost = minimumConnectionID === myConnectionID;
-    hostConnectionID = minimumConnectionID;
+      isHost = minimumConnectionID === myConnectionID;
+      hostConnectionID = minimumConnectionID;
+    }
   }
 
   let isAllUsersSubmittedCurrentRow = false;

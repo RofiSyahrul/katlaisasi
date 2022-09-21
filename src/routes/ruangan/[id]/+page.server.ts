@@ -4,6 +4,7 @@ import { ANSWER_COOKIE_KEY } from '$env/static/private';
 import { MAX_ROUND_PER_ROOM } from '$lib/constants/game';
 import { decode, encode } from '$lib/utils/codec.server';
 import { generateEncodedAnswer, getGameResult } from '$lib/utils/game.server';
+import { getRoom } from '$lib/utils/supabase.server';
 import type { Actions, PageServerLoad } from './$types';
 import type {
   DefineAnswerSuccessResponse,
@@ -25,10 +26,16 @@ const cachedAnswerMap = new Map<string, string>();
 const cachedDefinitionsMap = new Map<string, string[]>();
 
 export const load: PageServerLoad = async ({ cookies, locals, params, url }) => {
-  const roomID = decode(params.id);
+  const notFoundMessage = 'Ruangan tidak ditemukan. Yo ndak tau kok tanya saya 🤷🏽';
 
+  const roomID = decode(params.id);
   if (!/\d{5}/.test(roomID)) {
-    throw error(404, 'Ruangan tidak ditemukan. Yo ndak tau kok tanya saya 🤷🏽');
+    throw error(404, notFoundMessage);
+  }
+
+  const room = await getRoom(params.id);
+  if (!room) {
+    throw error(404, notFoundMessage);
   }
 
   const round = getRound(url);
@@ -51,7 +58,11 @@ export const load: PageServerLoad = async ({ cookies, locals, params, url }) => 
     cookies.set(key, encodedAnswer, { secure: url.hostname !== 'localhost' });
   }
 
-  return { round, seo: { shouldBlockSearchIndex: true, title: 'Adu Mekanik Katla' } };
+  return {
+    hostID: room.creator_id,
+    round,
+    seo: { shouldBlockSearchIndex: true, title: 'Adu Mekanik Katla' }
+  };
 };
 
 export const actions: Actions = {

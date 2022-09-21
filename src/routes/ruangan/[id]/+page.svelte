@@ -103,7 +103,11 @@
   </p>
 {:else}
   {#if isReady}
-    <Game isUserNameUpdated={isUserNameSaved} on:editUserName={() => (isPopupOpen = true)} />
+    <Game
+      hostID={data.hostID}
+      isUserNameUpdated={isUserNameSaved}
+      on:editUserName={() => (isPopupOpen = true)}
+    />
   {:else}
     <Spinner label="Sedang memuat" size="100px" />
   {/if}
