@@ -1,9 +1,11 @@
 import { invalid, redirect } from '@sveltejs/kit';
 
+import { dev } from '$app/environment';
 import { USER_NAME } from '$lib/constants/cookie-keys';
 import { validRoomIDs } from '$lib/constants/room-ids.server';
 import { cookieMaxAge } from '$lib/constants/time';
 import { createRoom, getCreatedRoomsIn7Days, getRoom } from '$lib/utils/supabase.server';
+import { isUserNameValid } from '$lib/utils/user-name';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
@@ -39,13 +41,18 @@ export const actions: Actions = {
 
     throw redirect(303, `/ruangan/${roomID}`);
   },
-  'set-user-name': async ({ cookies, locals, request, url }) => {
+  'set-user-name': async ({ cookies, locals, request }) => {
     const form = await request.formData();
-    const userName = `${form.get('katlaisasi-userName') ?? ''}`;
+    const userName = `${form.get('katlaisasi-userName') ?? ''}`.trim();
+    if (!isUserNameValid(userName)) {
+      return invalid(400, { message: 'Nama tidak valid' });
+    }
+
     locals.userName = userName;
     cookies.set(USER_NAME, userName, {
       maxAge: cookieMaxAge,
-      secure: url.hostname !== 'localhost'
+      path: '/',
+      secure: !dev
     });
   }
 };

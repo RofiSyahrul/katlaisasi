@@ -113,6 +113,11 @@ input:hover {
   border-color: var(--color-primary);
 }
 
+input:invalid,
+input[aria-invalid='true'] {
+  border-color: var(--color-danger);
+}
+
 input,
 button {
   font-size: inherit;

@@ -5,6 +5,7 @@
 
   import { enhance } from '$app/forms';
   import { userName } from '$lib/stores';
+  import { validUserNamePattern } from '$lib/utils/user-name';
 
   let input: HTMLInputElement;
 
@@ -35,9 +36,20 @@
   <input
     bind:this={input}
     bind:value={$userName}
+    on:change={(e) => e.currentTarget.setCustomValidity('')}
+    on:invalid={(e) => {
+      e.currentTarget.setCustomValidity(
+        `2-20 karakter,
+        tidak boleh ada karakter selain alphabet atau spasi, serta
+        tidak boleh diawali dan diakhiri dengan spasi ygy`
+      );
+    }}
     maxlength="20"
+    minlength="2"
     name="katlaisasi-userName"
+    pattern={validUserNamePattern}
     placeholder="Nama kamu"
+    required
     type="text"
   />
   <button aria-label="Simpan nama kamu" disabled={!$userName}>Simpan</button>
