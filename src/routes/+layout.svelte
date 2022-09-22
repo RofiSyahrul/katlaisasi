@@ -170,7 +170,7 @@
     padding: 1rem;
     width: 100%;
     height: calc(100vh - 48px);
-    max-width: 1024px;
+    max-width: 2000px;
     margin: 0 auto;
     box-sizing: border-box;
   }
