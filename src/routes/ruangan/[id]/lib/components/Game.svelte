@@ -8,6 +8,7 @@
   import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
   import Popup from '$lib/components/Popup.svelte';
+  import { showSnackbar } from '$lib/components/snackbar';
   import Spinner from '$lib/components/Spinner.svelte';
   import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
   import { REQUIRED_GUESS_LENGTH, TOTAL_GUESS_ROW } from '$lib/constants/game';
@@ -16,6 +17,7 @@
   import type { GuessItem } from '$lib/types/game';
   import Timer from '$lib/utils/timer';
   import type { DefineAnswerSuccessResponse } from '../../types';
+  import { getRoomContext } from '../liveblocks/context';
   import { baseInitialUserState } from '../liveblocks/initials';
   import type { RowStatus, UserRoundStatus } from '../liveblocks/types';
   import { useGameState } from '../liveblocks/use-game-state';
@@ -32,6 +34,7 @@
   export let hostID: string;
   export let isUserNameUpdated = false;
 
+  const room = getRoomContext();
   const others = useOthers();
   const self = useSelf();
   const presence = useMyPresence();
@@ -79,6 +82,15 @@
       if (inactivityCountDown === 0) clearInterval(inactivityIntervalTimer);
     }, ONE_SECOND_IN_MS);
   }, inactivityTimeout);
+
+  const unsubscribeEvent = room.subscribe('event', ({ event }) => {
+    if (event.type === 'LEAVE_ROOM') {
+      showSnackbar({
+        message: `<strong>${event.user.name}</strong> telah keluar`,
+        variant: 'danger'
+      });
+    }
+  });
 
   $: if (isUserNameUpdated) {
     presence.update((prev) => ({ ...prev, userName: $userName }));
@@ -360,6 +372,7 @@
     inactivityTimer.destroy();
     inactivityCountDownTimer.destroy();
     clearInterval(inactivityIntervalTimer);
+    unsubscribeEvent();
   });
 </script>
 

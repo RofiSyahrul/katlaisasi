@@ -49,7 +49,11 @@ export type CurrentUser = User<Presence, UserMeta> | null;
 export type OtherUsers = Others<Presence, UserMeta>;
 
 export type RoomEvent = {
-  type: 'DUMMY_EVENT';
+  type: 'LEAVE_ROOM';
+  user: {
+    id: string;
+    name: string;
+  };
 };
 
 export type RoomType = Room<Presence, RoomStorage, UserMeta, RoomEvent>;

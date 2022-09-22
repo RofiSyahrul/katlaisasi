@@ -87,6 +87,14 @@
 
   onDestroy(() => {
     if (client && room) {
+      const self = room.getSelf();
+      room.broadcastEvent({
+        type: 'LEAVE_ROOM',
+        user: {
+          id: self?.id ?? '',
+          name: self?.presence?.userName || 'Unknown'
+        }
+      });
       client.leave(roomID);
     }
 

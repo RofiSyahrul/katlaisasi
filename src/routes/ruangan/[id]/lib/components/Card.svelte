@@ -72,7 +72,7 @@
     {#each guessesPlaceholder as guessChars, guessIndex (`guess-${guessIndex}`)}
       <div class="card__guess-row">
         {#each guessChars as defaultChar, charIndex}
-          {@const guess = guesses[guessIndex]?.[charIndex]}
+          {@const guess = guesses?.[guessIndex]?.[charIndex]}
           {@const char = guess?.char ?? defaultChar}
           {@const shouldShowChar = isCurrentUser || !isCurrentUserPlaying}
           {@const shownChar = shouldShowChar ? char : ''}
