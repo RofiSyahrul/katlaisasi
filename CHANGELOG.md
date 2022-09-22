@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/RofiSyahrul/katlaisasi/compare/v1.0.1...v1.0.2) (2022-09-22)
+
+
+### Bug Fixes
+
+* system theme styles ([78fa389](https://github.com/RofiSyahrul/katlaisasi/commit/78fa389210f3ce5f21b9557993c127f88084c0ae))
+
 ### [1.0.1](https://github.com/RofiSyahrul/katlaisasi/compare/v1.0.0...v1.0.1) (2022-09-22)
 
 
