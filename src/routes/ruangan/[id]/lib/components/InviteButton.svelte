@@ -1,11 +1,19 @@
 <script lang="ts">
+  import { showSnackbar } from '$lib/components/snackbar';
   import { copyToClipBoard } from '$lib/utils/copy-to-clipboard';
 
   async function handleClick() {
     const { origin, pathname, search } = window.location;
     const text = `Mari kita adu mekanik Katla di Katlaisasi ${origin}${pathname}${search}`;
     const isSuccess = await copyToClipBoard(text);
-    console.log({ isSuccess });
+    if (isSuccess) {
+      showSnackbar('Pesan undangan <strong>tersalin</strong>!');
+    } else {
+      showSnackbar({
+        message: 'Pesan undangan <strong>gagal</strong> disalin',
+        variant: 'danger'
+      });
+    }
   }
 </script>
 
