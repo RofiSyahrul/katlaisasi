@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
 
   import { theme } from '$lib/stores';
-  import { setTheme } from '$lib/utils/theme';
+  import { setTheme } from '$lib/theme/set-theme';
 
   type ThemeOption = {
     label: string;

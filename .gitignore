@@ -4,6 +4,7 @@ node_modules
 /build
 /.svelte-kit
 /package
+/src/lib/theme/styles.css
 /static/~partytown
 .env
 .env.*

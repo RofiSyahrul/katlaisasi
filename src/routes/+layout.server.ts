@@ -1,6 +1,6 @@
 import { THEME } from '$lib/constants/cookie-keys';
 import { DEFAULT_DESC, DEFAULT_IMAGE, DEFAULT_KEYWORD, DEFAULT_TITLE } from '$lib/constants/seo';
-import { setTheme } from '$lib/utils/theme';
+import { setTheme } from '$lib/theme/set-theme';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies, locals, url }) => {

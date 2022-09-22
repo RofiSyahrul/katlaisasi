@@ -18,34 +18,6 @@
     return args.map(loadScript).join('\n');
   }
 
-  const darkStyles = `:root, ::before, ::after {
---color-bg-body: var(--color-neutral-dim);
---color-text-body: var(--color-neutral-bright);
---color-text-subtle: var(--color-neutral-bright2);
---color-text-inverse: var(--color-neutral-dim);
-
---color-primary: var(--color-primary-bright);
---color-secondary: var(--color-secondary-bright);
---color-danger: var(--color-danger-bright);
-
---color-border: var(--color-neutral-dim1);
-}`;
-
-  const lightStyles = `:root, ::before, ::after {
---color-bg-body: var(--color-neutral-bright);
---color-text-body: var(--color-neutral-dim);
---color-text-subtle: var(--color-neutral-dim2);
---color-text-inverse: var(--color-neutral-bright);
-
---color-primary: var(--color-primary-dim);
---color-secondary: var(--color-secondary-dim);
---color-danger: var(--color-danger-dim);
-
---color-border: var(--color-neutral-bright1);
-}`;
-
-  const systemStyles = `${lightStyles} @media (prefer-color-scheme: dark) {${darkStyles}}`;
-
   function getStylesheet(theme: Theme) {
     let styles = systemStyles;
     switch (theme) {
@@ -72,6 +44,7 @@
   import Header from '$lib/components/Header.svelte';
   import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
   import { theme, userName } from '$lib/stores';
+  import { darkStyles, lightStyles, systemStyles } from '$lib/theme/styles';
   import type { LayoutData } from './$types';
 
   export let data: LayoutData;
@@ -129,7 +102,6 @@
 
   <meta name="color-scheme" content={$theme == 'system' ? 'light dark' : $theme} />
   {@html getStylesheet($theme)}
-  <!-- <link rel="stylesheet" href={`/theme/${$theme}.css`} /> -->
 
   {#each appleIconSizes as size (size)}
     <link

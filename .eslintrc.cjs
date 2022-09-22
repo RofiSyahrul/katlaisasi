@@ -22,7 +22,7 @@ module.exports = {
       }
     },
     {
-      files: ['*.server.ts', '+server.ts'],
+      files: ['*.server.ts', '+server.ts', './scripts/**'],
       rules: {
         'no-console': 0
       }
