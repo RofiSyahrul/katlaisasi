@@ -27,4 +27,4 @@ export const lightStyles = `:root, ::before, ::after {
 }`;
 
 export const systemStyles = `${lightStyles}
-@media (prefer-color-scheme: dark) {${darkStyles}}`;
+@media (prefers-color-scheme: dark) {${darkStyles}}`;
