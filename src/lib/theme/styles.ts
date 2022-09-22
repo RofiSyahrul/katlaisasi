@@ -1,5 +1,6 @@
 export const darkStyles = `:root, ::before, ::after {
 --color-bg-body: var(--color-neutral-dim);
+--color-bg-subtle: var(--color-neutral-dim2);
 --color-text-body: var(--color-neutral-bright);
 --color-text-subtle: var(--color-neutral-bright2);
 --color-text-inverse: var(--color-neutral-dim);
@@ -13,6 +14,7 @@ export const darkStyles = `:root, ::before, ::after {
 
 export const lightStyles = `:root, ::before, ::after {
 --color-bg-body: var(--color-neutral-bright);
+--color-bg-subtle: var(--color-neutral-bright2)
 --color-text-body: var(--color-neutral-dim);
 --color-text-subtle: var(--color-neutral-dim2);
 --color-text-inverse: var(--color-neutral-bright);
