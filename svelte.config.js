@@ -13,7 +13,10 @@ const config = {
   }),
 
   kit: {
-    adapter: adapter()
+    adapter: adapter(),
+    serviceWorker: {
+      files: (filePath) => !filePath.startsWith('~partytown/debug')
+    }
   }
 };
 

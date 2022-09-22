@@ -34,6 +34,7 @@
   import { createPortal } from '$lib/actions/portal';
   import Header from '$lib/components/Header.svelte';
   import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+  import { siteConfig } from '$lib/config/site';
   import { theme, userName } from '$lib/stores';
   import { darkStyles, lightStyles, systemStyles } from '$lib/theme/styles';
   import type { LayoutData } from './$types';
@@ -57,6 +58,8 @@
       return url;
     }
   });
+
+  const msImageSizes = Object.keys(siteConfig.icon.msTile);
 
   let description: string,
     image = data.seo.image,
@@ -101,9 +104,6 @@
 </script>
 
 <svelte:head>
-  <meta charset="utf-8" />
-  <meta httpequiv="X-UA-Compatible" content="IE=edge" />
-
   <meta name="color-scheme" content={$theme == 'system' ? 'light dark' : $theme} />
   <svelte:element this="style" data-theme={$theme}>
     {styles}
@@ -117,20 +117,24 @@
     />
   {/each}
 
-  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/icons/android-chrome-192x192.png" />
-  <link rel="icon" type="image/png" sizes="384x384" href="/icons/android-chrome-384x384.png" />
-  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+  <link rel="mask-icon" href="/icons/savari-pinned-tab.svg" color={siteConfig.themeColor} />
+  <meta name="apple-mobile-web-app-title" content={siteConfig.name} />
+  <meta name="application-name" content={siteConfig.name} />
+  <meta name="msapplication-navbutton-color" content={siteConfig.themeColor} />
+  <meta name="msapplication-TileColor" content={siteConfig.backgroundColor} />
+  <meta name="theme-color" content={siteConfig.themeColor} />
 
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:creator" content="@RofiSyahrul" />
+  {#each msImageSizes as size (size)}
+    <meta name="msapplication-TileImage" content={`/icons/mstile-${size}.png`} />
+  {/each}
 
   <title>{title}</title>
   <meta property="og:title" content={title} />
   <meta name="twitter:title" content={title} />
 
   <link rel="canonical" href={$page.url.href} />
-  <meta name="og:url" content={$page.url.href} />
+  <meta property="og:url" content={$page.url.href} />
+  <meta name="twitter:url" content={$page.url.href} />
 
   <meta name="description" content={description} />
   <meta property="og:description" content={description} />
