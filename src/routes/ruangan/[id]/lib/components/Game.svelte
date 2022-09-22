@@ -402,7 +402,6 @@
 <section class="card-list scrollable">
   {#if $self}
     <Card
-      on:editUserName
       guesses={guessesByCurrentUser}
       isCurrentUser
       {isCurrentUserPlaying}
@@ -410,7 +409,9 @@
       isVictory={$presence.userRoundStatus === 'victory'}
       submittedRow={$presence.currentRowStatus === 'submitted' ? $presence.activeRow : -1}
       userName={$presence.userName ?? $self.info.name ?? $userName}
-    />
+    >
+      <slot name="editButton" slot="editButton" />
+    </Card>
   {/if}
   {#if $others && $usersMap}
     {#each [...$others] as { connectionId, id, info, presence } (connectionId)}

@@ -36,7 +36,7 @@
   <input
     bind:this={input}
     bind:value={$userName}
-    on:change={(e) => e.currentTarget.setCustomValidity('')}
+    on:input={(e) => e.currentTarget.setCustomValidity('')}
     on:invalid={(e) => {
       e.currentTarget.setCustomValidity(
         `2-20 karakter,

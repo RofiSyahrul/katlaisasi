@@ -1,13 +1,4 @@
-<script lang="ts" context="module">
-  export type CardEvent = {
-    editUserName: undefined;
-  };
-</script>
-
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-
-  import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
   import { TOTAL_GUESS_ROW } from '$lib/constants/game';
   import type { GuessItem } from '$lib/types/game';
 
@@ -18,8 +9,6 @@
   export let isVictory: boolean;
   export let submittedRow: number;
   export let userName: string;
-
-  const dispatch = createEventDispatcher<CardEvent>();
 
   const guessesPlaceholder = Array.from<unknown, string[]>({ length: TOTAL_GUESS_ROW }, () => [
     '',
@@ -52,20 +41,7 @@
           </svg>
         </div>
       {/if}
-      {#if isCurrentUser}
-        <button
-          aria-label="Edit nama kamu"
-          title="Edit nama kamu"
-          on:click={() => dispatch('editUserName')}
-        >
-          <VisuallyHidden>Edit nama kamu</VisuallyHidden>
-          <svg aria-label="Edit" fill="currentColor" focusable="false" viewBox="0 0 24 24">
-            <path
-              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-            />
-          </svg>
-        </button>
-      {/if}
+      <slot name="editButton" />
     </div>
   </div>
   <div class="card__guess-board">
@@ -163,12 +139,6 @@
   .card__header__right {
     display: flex;
     gap: 4px;
-  }
-
-  .card__header__right button {
-    min-height: unset;
-    height: 32px;
-    width: 32px;
   }
 
   .card__guess-board {
