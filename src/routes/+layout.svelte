@@ -18,17 +18,8 @@
     return args.map(loadScript).join('\n');
   }
 
-  function getStylesheet(theme: Theme) {
-    let styles = systemStyles;
-    switch (theme) {
-      case 'dark':
-        styles = darkStyles;
-        break;
-      case 'light':
-        styles = lightStyles;
-        break;
-    }
-    return `<sty` + `le data-theme="${theme}">${styles.replace(/(\n|\t)/g, '')}</sty` + `le>`;
+  function convertToSingleLine(value: string): string {
+    return value.replace(/(\n|\t)/g, '');
   }
 </script>
 
@@ -94,6 +85,19 @@
       keyword = $page.data.seo.keyword;
     }
   }
+
+  let styles = '';
+  $: switch ($theme) {
+    case 'dark':
+      styles = convertToSingleLine(darkStyles);
+      break;
+    case 'light':
+      styles = convertToSingleLine(lightStyles);
+      break;
+    default:
+      styles = convertToSingleLine(systemStyles);
+      break;
+  }
 </script>
 
 <svelte:head>
@@ -101,7 +105,9 @@
   <meta httpequiv="X-UA-Compatible" content="IE=edge" />
 
   <meta name="color-scheme" content={$theme == 'system' ? 'light dark' : $theme} />
-  {@html getStylesheet($theme)}
+  <svelte:element this="style" data-theme={$theme}>
+    {styles}
+  </svelte:element>
 
   {#each appleIconSizes as size (size)}
     <link
