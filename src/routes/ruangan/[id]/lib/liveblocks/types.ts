@@ -48,12 +48,19 @@ export type CurrentUser = User<Presence, UserMeta> | null;
 
 export type OtherUsers = Others<Presence, UserMeta>;
 
-export type RoomEvent = {
+type LeaveRoomEvent = {
   type: 'LEAVE_ROOM';
   user: {
     id: string;
     name: string;
   };
 };
+
+type JoinRoomEvent = {
+  type: 'JOIN_ROOM';
+  userName: string;
+};
+
+export type RoomEvent = LeaveRoomEvent | JoinRoomEvent;
 
 export type RoomType = Room<Presence, RoomStorage, UserMeta, RoomEvent>;

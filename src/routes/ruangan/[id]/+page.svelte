@@ -14,6 +14,7 @@
   import Timer from '$lib/utils/timer';
   import type { PageServerData } from './$types';
   import Game from './lib/components/Game.svelte';
+  import { broadcastJoinRoomEvent } from './lib/liveblocks/broadcast';
   import { setRoomContext } from './lib/liveblocks/context';
   import {
     createInitialPresence,
@@ -62,7 +63,23 @@
   // @ts-ignore
   $: setRoomContext(room);
 
+  function leaveRoom() {
+    editNameTimer.destroy();
+    if (client && room) {
+      const self = room.getSelf();
+      room.broadcastEvent({
+        type: 'LEAVE_ROOM',
+        user: {
+          id: self?.id ?? '',
+          name: self?.presence?.userName || 'Unknown'
+        }
+      });
+      client.leave(roomID);
+    }
+  }
+
   function handleBeforeUnload() {
+    leaveRoom();
     localStorage.removeItem(roomID);
   }
 
@@ -109,6 +126,8 @@
             editNameTimer.init();
           }
         }
+        const user = room.getSelf();
+        broadcastJoinRoomEvent(room, user);
         isReady = true;
       });
 
@@ -118,20 +137,7 @@
   });
 
   onDestroy(() => {
-    editNameTimer.destroy();
-
-    if (client && room) {
-      const self = room.getSelf();
-      room.broadcastEvent({
-        type: 'LEAVE_ROOM',
-        user: {
-          id: self?.id ?? '',
-          name: self?.presence?.userName || 'Unknown'
-        }
-      });
-      client.leave(roomID);
-    }
-
+    leaveRoom();
     if (browser) {
       localStorage.removeItem(roomID);
       window.removeEventListener('beforeunload', handleBeforeUnload);

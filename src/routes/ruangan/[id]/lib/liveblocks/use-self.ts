@@ -1,6 +1,7 @@
 import { onDestroy } from 'svelte';
 import { writable, type Writable } from 'svelte/store';
 
+import { broadcastJoinRoomEvent } from './broadcast';
 import { getRoomContext } from './context';
 import type { CurrentUser } from './types';
 
@@ -9,11 +10,15 @@ export function useSelf(): Writable<CurrentUser> {
   const self = writable<CurrentUser>(room.getSelf());
 
   const unsubscribeConnection = room.subscribe('connection', () => {
-    self.set(room.getSelf());
+    const user = room.getSelf();
+    broadcastJoinRoomEvent(room, user);
+    self.set(user);
   });
 
   const unsubscribeMyPresence = room.subscribe('my-presence', () => {
-    self.set(room.getSelf());
+    const user = room.getSelf();
+    broadcastJoinRoomEvent(room, user);
+    self.set(user);
   });
 
   onDestroy(() => {

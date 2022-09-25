@@ -89,6 +89,12 @@
         message: `<strong>${event.user.name}</strong> telah keluar`,
         variant: 'danger'
       });
+    } else if (event.type === 'JOIN_ROOM') {
+      showSnackbar({
+        duration: 5000,
+        message: `<strong>${event.userName}</strong> telah bergabung`,
+        variant: 'success'
+      });
     }
   });
 

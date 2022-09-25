@@ -15,6 +15,12 @@ export function useMyPresence(): Writable<Presence> {
     const newPresence = updater(prevPresence);
     if (!equal(prevPresence, newPresence)) {
       room.updatePresence(newPresence);
+      if (!prevPresence.userName && newPresence.userName) {
+        room.broadcastEvent({
+          type: 'JOIN_ROOM',
+          userName: newPresence.userName
+        });
+      }
     }
   }
 

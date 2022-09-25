@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-  export type SnackbarVariant = 'danger' | 'neutral';
+  export type SnackbarVariant = 'danger' | 'neutral' | 'success';
 
   export type SnackbarEvent = {
     destroyed: undefined;
@@ -87,6 +87,10 @@
 
   .snackbar_danger {
     background-color: var(--color-danger);
+  }
+
+  .snackbar_success {
+    background-color: var(--color-secondary);
   }
 
   .snackbar__message {
