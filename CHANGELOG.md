@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.1.0...v1.2.0) (2022-09-25)
+
+
+### Features
+
+* add default value to theme tokens ([3d7b472](https://github.com/RofiSyahrul/katlaisasi/commit/3d7b47260b21d7e7d85146c6026e174cca5e7bb1))
+* add how to play section to homepage ([eb93547](https://github.com/RofiSyahrul/katlaisasi/commit/eb93547160bca7e1f1d47d6774b4f671ccf5f755))
+* notify other users when a user joined their room ([272ada4](https://github.com/RofiSyahrul/katlaisasi/commit/272ada44934353bc167378fcf97232d71db771fc))
+
+
+### Improvements
+
+* extract Tile as shared component ([8539212](https://github.com/RofiSyahrul/katlaisasi/commit/8539212f48b33ac98c853b4c01a1815a2aba6b0c))
+* restructure homepage and room form elements ([22db339](https://github.com/RofiSyahrul/katlaisasi/commit/22db3395331e6f4cbec3575bd085504ac9b13559))
+
 ## [1.1.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.0.2...v1.1.0) (2022-09-22)
 
 
