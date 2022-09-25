@@ -1,6 +1,6 @@
 <script lang="ts">
   import { quintOut } from 'svelte/easing';
-  import { scale, slide } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
 
   import HowToPlay from '$lib/components/HowToPlay.svelte';
   import RoomForm from '$lib/components/RoomForm.svelte';
@@ -46,11 +46,9 @@
   <section>
     <HowToPlay />
   </section>
-  {#if $userName && !isUserNameFormShown}
-    <section class="room-form-section" transition:scale>
-      <RoomForm />
-    </section>
-  {/if}
+  <section class="room-form-section">
+    <RoomForm shouldDisableSubmit={!$userName || isUserNameFormShown} />
+  </section>
 </div>
 
 <style>

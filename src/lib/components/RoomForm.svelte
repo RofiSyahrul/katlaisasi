@@ -4,6 +4,8 @@
   import { applyAction, enhance, type SubmitFunction } from '$app/forms';
   import Spinner from './Spinner.svelte';
 
+  export let shouldDisableSubmit = false;
+
   let roomID: string;
   let roomIDErrorMessage = '';
   let submittedAction: 'create' | 'join' | null = null;
@@ -33,7 +35,7 @@
 <h3>Siap adu mekanik?</h3>
 
 <form action="/?/create-room" method="post" use:enhance={submitFn}>
-  <button class="create-room-btn" disabled={!!submittedAction}>
+  <button class="create-room-btn" disabled={!!submittedAction || shouldDisableSubmit}>
     {#if submittedAction === 'create'}
       <div class="spinner-wrapper">
         <Spinner />
@@ -48,7 +50,7 @@
 <form action="/?/join-room" class="join-room-form" method="post" use:enhance={submitFn}>
   <label for="katlaisasi-room-id"> Gabung dengan yang lain </label>
   <input
-    aria-describedby="katlaisasi-room-id-error-description"
+    aria-describedby={isInvalid ? 'katlaisasi-room-id-error-description' : ''}
     aria-invalid={isInvalid}
     id="katlaisasi-room-id"
     name="katlaisasi-roomID"
@@ -61,7 +63,7 @@
       {roomIDErrorMessage}
     </p>
   {/if}
-  <button disabled={!roomID || !!submittedAction}>
+  <button disabled={!roomID || !!submittedAction || shouldDisableSubmit}>
     {#if submittedAction === 'join'}
       <div class="spinner-wrapper">
         <Spinner />
