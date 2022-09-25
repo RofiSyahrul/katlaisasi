@@ -2,6 +2,7 @@
   import { quintOut } from 'svelte/easing';
   import { scale, slide } from 'svelte/transition';
 
+  import HowToPlay from '$lib/components/HowToPlay.svelte';
   import RoomForm from '$lib/components/RoomForm.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
   import { userName } from '$lib/stores';
@@ -41,11 +42,16 @@
   {/if}
 </section>
 
-{#if $userName && !isUserNameFormShown}
-  <section class="room-form-section" transition:scale>
-    <RoomForm />
+<div>
+  <section>
+    <HowToPlay />
   </section>
-{/if}
+  {#if $userName && !isUserNameFormShown}
+    <section class="room-form-section" transition:scale>
+      <RoomForm />
+    </section>
+  {/if}
+</div>
 
 <style>
   section {
@@ -54,15 +60,28 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-top: 32px;
+    margin-top: 24px;
   }
 
   .welcome {
     gap: 16px;
   }
 
-  .room-form-section {
-    margin-top: 48px;
+  div {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 1366px;
+    margin: 24px auto 0;
+  }
+
+  div > section {
+    margin: 0;
+    justify-content: flex-start;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 8px;
   }
 
   h2,
@@ -73,5 +92,19 @@
 
   button {
     min-height: unset;
+  }
+
+  @media (min-width: 768px) {
+    div {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 960px) {
+    .room-form-section :global(button),
+    .room-form-section :global(input),
+    .room-form-section :global(.divider) {
+      width: 100%;
+    }
   }
 </style>

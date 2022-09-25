@@ -163,7 +163,7 @@
 
 <Header />
 
-<main class:no-header-xs={$page.url.pathname.startsWith('/ruangan/')}>
+<main class:room-page={$page.url.pathname.startsWith('/ruangan/')}>
   <slot />
 </main>
 
@@ -179,14 +179,17 @@
     flex-direction: column;
     padding: 1rem;
     width: 100%;
-    height: calc(100vh - 48px);
     max-width: 2000px;
     margin: 0 auto;
     box-sizing: border-box;
   }
 
+  main.room-page {
+    height: calc(100vh - 48px);
+  }
+
   @media (max-width: 450px) {
-    main.no-header-xs {
+    main.room-page {
       height: 100vh;
     }
   }
