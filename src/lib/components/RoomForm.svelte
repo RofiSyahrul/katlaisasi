@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { scale, slide } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
 
   import { applyAction, enhance, type SubmitFunction } from '$app/forms';
   import Spinner from './Spinner.svelte';
@@ -30,7 +30,9 @@
   };
 </script>
 
-<form action="/?/create-room" method="post" transition:scale use:enhance={submitFn}>
+<h3>Siap adu mekanik?</h3>
+
+<form action="/?/create-room" method="post" use:enhance={submitFn}>
   <button class="create-room-btn" disabled={!!submittedAction}>
     {#if submittedAction === 'create'}
       <div class="spinner-wrapper">
@@ -40,14 +42,10 @@
     Bikin ruangan baru
   </button>
 </form>
-<div class="divider" transition:scale>atau</div>
-<form
-  action="/?/join-room"
-  class="join-room-form"
-  method="post"
-  transition:scale
-  use:enhance={submitFn}
->
+
+<div class="divider">atau</div>
+
+<form action="/?/join-room" class="join-room-form" method="post" use:enhance={submitFn}>
   <label for="katlaisasi-room-id"> Gabung dengan yang lain </label>
   <input
     aria-describedby="katlaisasi-room-id-error-description"
@@ -149,6 +147,10 @@
     text-align: center;
     font-size: 0.8rem;
     color: var(--color-text-subtle);
+  }
+
+  h3 {
+    margin: 0;
   }
 
   button {

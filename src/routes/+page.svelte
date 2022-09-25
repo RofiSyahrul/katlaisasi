@@ -1,6 +1,6 @@
 <script lang="ts">
   import { quintOut } from 'svelte/easing';
-  import { slide } from 'svelte/transition';
+  import { scale, slide } from 'svelte/transition';
 
   import RoomForm from '$lib/components/RoomForm.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
@@ -13,22 +13,21 @@
   $: if (isUserNameSaved) hasInitialUserName = true;
 </script>
 
-<section>
-  <p>
-    Adu mekanik <a href="https://katla.vercel.app" target="_blank"><strong>KATLA</strong></a> bersama
-    teman/keluarga
-  </p>
-</section>
+<p>
+  Adu mekanik
+  <a href="https://katla.vercel.app?utm_source=katlaisasi&utm_medium=web" target="_blank">
+    <strong>KATLA</strong>
+  </a>
+  bersama teman/keluarga
+</p>
 
 <section class="welcome">
-  <div>
-    {#if hasInitialUserName && $userName}
-      <h2>Selamat Datang, <u><em>{$userName}</em></u>!</h2>
-    {:else}
-      <h2>Selamat Datang!</h2>
-      <p>Kenalan dulu yuk! Siapa nama kamu?</p>
-    {/if}
-  </div>
+  {#if hasInitialUserName && $userName}
+    <h2>Selamat Datang, <u><em>{$userName}</em></u>!</h2>
+  {:else}
+    <h2>Selamat Datang!</h2>
+    <p>Kenalan dulu yuk! Siapa nama kamu?</p>
+  {/if}
 
   {#if isUserNameFormShown}
     <UserNameForm
@@ -43,7 +42,7 @@
 </section>
 
 {#if $userName && !isUserNameFormShown}
-  <section class="room-form-section">
+  <section class="room-form-section" transition:scale>
     <RoomForm />
   </section>
 {/if}
@@ -55,21 +54,11 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
+    margin-top: 32px;
   }
 
   .welcome {
     gap: 16px;
-  }
-
-  .welcome > div:first-child {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 32px;
-    text-align: center;
-    flex: 1;
-    gap: 4px;
   }
 
   .room-form-section {
