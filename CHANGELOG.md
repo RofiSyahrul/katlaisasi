@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/RofiSyahrul/katlaisasi/compare/v1.2.0...v1.2.1) (2022-09-25)
+
+
+### Bug Fixes
+
+* show room form and disable the buttons when editing user name ([169d4dc](https://github.com/RofiSyahrul/katlaisasi/commit/169d4dc0ce7330b89b7d045a4e5b42b91c21b255))
+
 ## [1.2.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.1.0...v1.2.0) (2022-09-25)
 
 
