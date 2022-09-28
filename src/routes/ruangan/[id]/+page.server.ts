@@ -93,7 +93,9 @@ export const actions: Actions = {
       if (!Array.isArray(data)) return response;
 
       for (const item of data) {
-        response.definitions.push(...(item.makna ?? []).map((maknaItem) => maknaItem.definisi));
+        for (const { definisi } of item.makna ?? []) {
+          if (definisi) response.definitions.push(definisi);
+        }
       }
 
       cachedDefinitionsMap.set(answer, response.definitions);
