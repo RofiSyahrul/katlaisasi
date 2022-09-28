@@ -32,6 +32,7 @@
   import { page } from '$app/stores';
   import { PUBLIC_GA4_ID } from '$env/static/public';
   import { createPortal } from '$lib/actions/portal';
+  import Footer from '$lib/components/Footer.svelte';
   import Header from '$lib/components/Header.svelte';
   import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
   import { siteConfig } from '$lib/config/site';
@@ -166,6 +167,10 @@
 <main class:room-page={$page.url.pathname.startsWith('/ruangan/')}>
   <slot />
 </main>
+
+{#if $page.url.pathname === '/'}
+  <Footer />
+{/if}
 
 <ThemeSwitcher />
 

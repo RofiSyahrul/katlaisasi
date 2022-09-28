@@ -5,6 +5,7 @@
   import { browser } from '$app/environment';
   import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
+  import Footer from '$lib/components/Footer.svelte';
   import HowToPlay from '$lib/components/HowToPlay.svelte';
   import Popup from '$lib/components/Popup.svelte';
   import Spinner from '$lib/components/Spinner.svelte';
@@ -195,6 +196,8 @@
   <Popup isOpen={isHelpPopupOpen} on:close={() => (isHelpPopupOpen = false)}>
     <div class="how-to-play-container">
       <HowToPlay />
+      <hr />
+      <Footer isFullWidth />
     </div>
   </Popup>
 {/if}
@@ -229,6 +232,14 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
+  }
+
+  .how-to-play-container > hr {
+    margin: 8px 0;
+    height: 0px;
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--color-border);
   }
 
   @media (max-width: 450px) {
