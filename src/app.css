@@ -30,14 +30,14 @@
   --color-bg-tile-correct: #ca8a04;
   --color-bg-tile-exact: #15803d;
 
-  --ring-offset-shadow: 0 0 #0000;
-  --ring-shadow: 0 0 #0000;
+  --ring-offset-shadow: 0 0 var(--color-text-body);
+  --ring-shadow: 0 0 var(--color-text-body);
 
-  --shadow-md: var(--ring-offset-shadow), var(--ring-shadow), 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: var(--ring-offset-shadow), var(--ring-shadow), 0 4px 6px -1px var(--shadow-color-10),
+    0 2px 4px -1px var(--shadow-color-06);
 
-  --shadow-xl: var(--ring-offset-shadow), var(--ring-shadow), 0 20px 25px -5px rgb(0 0 0 / 0.1),
-    0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-xl: var(--ring-offset-shadow), var(--ring-shadow),
+    0 20px 25px -5px var(--shadow-color-10), 0 8px 10px -6px var(--shadow-color-10);
 
   font-family: var(--font-family);
 }

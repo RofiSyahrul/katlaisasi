@@ -10,6 +10,9 @@ export const darkStyles = `:root, ::before, ::after {
 --color-danger: var(--color-danger-bright, lightcoral);
 
 --color-border: var(--color-neutral-dim1, darkslategray);
+
+--shadow-color-06: rgba(255, 255, 255, 0.06);
+--shadow-color-10: rgba(255, 255, 255, 0.1);
 }`;
 
 export const lightStyles = `:root, ::before, ::after {
@@ -24,6 +27,9 @@ export const lightStyles = `:root, ::before, ::after {
 --color-danger: var(--color-danger-dim, darkred);
 
 --color-border: var(--color-neutral-bright1, lightslategray);
+
+--shadow-color-06: rgba(0, 0, 0, 0.06);
+--shadow-color-10: rgba(0, 0, 0, 0.1);
 }`;
 
 export const systemStyles = `${lightStyles}
