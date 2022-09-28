@@ -1,18 +1,50 @@
 <script lang="ts" context="module">
   type Example = {
-    description: string;
+    descriptions: string[];
     guess: GuessItem[];
   };
 
-  function createExample(value: string, upperCaseStatus: GuessStatus): Example {
-    let highlightedChar = '';
+  function createDescription(chars: string[], status: GuessStatus): string {
+    if (chars.length === 0) return '';
+
+    let description = `Huruf `;
+    description += enumerate(...chars.map((char) => `<strong>${char}</strong>`));
+
+    switch (status) {
+      case 'exact': {
+        description += ' ada di kata rahasia dan posisinya sudah tepat.';
+        return description;
+      }
+      case 'correct': {
+        description += ' ada di kata rahasia, tetapi posisinya belum tepat.';
+        return description;
+      }
+      case 'wrong': {
+        description += ' tidak ada di kata rahasia.';
+        return description;
+      }
+      default: {
+        description = '';
+        return description;
+      }
+    }
+  }
+
+  function createExample(value: string, upperCaseStatuses: GuessStatus[]): Example {
+    const exactChars: string[] = [];
+    const correctChars: string[] = [];
+    const wrongChars: string[] = [];
 
     const guess = value.split('').map<GuessItem>((char) => {
       const upperCasedChar = char.toUpperCase();
-      let status: GuessStatus = 'guessing';
-      if (upperCasedChar === char && !highlightedChar) {
-        status = upperCaseStatus;
-        highlightedChar = char;
+      let status: GuessStatus = 'wrong';
+      if (upperCasedChar === char && upperCaseStatuses.length > 0) {
+        status = upperCaseStatuses[0];
+        upperCaseStatuses.shift();
+        if (status === 'correct') correctChars.push(upperCasedChar);
+        else if (status === 'exact') exactChars.push(upperCasedChar);
+      } else {
+        wrongChars.push(upperCasedChar);
       }
       return {
         char: upperCasedChar,
@@ -20,34 +52,22 @@
       };
     });
 
-    let description = `Huruf <strong>${highlightedChar}</strong> `;
-    switch (upperCaseStatus) {
-      case 'exact':
-        description += 'ada di kata rahasia dan posisinya sudah tepat';
-        break;
-      case 'correct':
-        description += 'ada di kata rahasia, tetapi posisinya belum tepat';
-        break;
-      case 'wrong':
-        description += 'tidak ada di kata rahasia';
-        break;
-      default:
-        description = '';
-    }
+    const descriptions = [
+      createDescription(exactChars, 'exact'),
+      createDescription(correctChars, 'correct'),
+      createDescription(wrongChars, 'wrong')
+    ].filter(Boolean);
 
-    return { description, guess };
+    return { descriptions, guess };
   }
 
-  const examples: Example[] = [
-    createExample('teBak', 'exact'),
-    createExample('sayUr', 'correct'),
-    createExample('fosiL', 'wrong')
-  ];
+  const example = createExample('teBAk', ['exact', 'correct']);
 </script>
 
 <script lang="ts">
   import { MAX_ROUND_PER_ROOM } from '$lib/constants/game';
   import type { GuessItem, GuessStatus } from '$lib/types/game';
+  import { enumerate } from '$lib/utils/enumerate';
   import Tile from './Tile.svelte';
 </script>
 
@@ -70,17 +90,15 @@
 
 <strong>Contoh</strong>
 
+<div class="example-guess">
+  {#each example.guess as { char, status }, index (`${char}-${status}-${index}`)}
+    <Tile letter={char} {status} />
+  {/each}
+</div>
 <ul>
-  {#each examples as { description, guess } (description)}
+  {#each example.descriptions as description (description)}
     <li>
-      <div>
-        {#each guess as { char, status }, index (`${char}-${status}-${index}`)}
-          <Tile letter={char} {status} />
-        {/each}
-      </div>
-      <p>
-        {@html description}
-      </p>
+      {@html description}
     </li>
   {/each}
 </ul>
@@ -120,23 +138,20 @@
     list-style: none;
     width: 100%;
     padding: 0;
-    margin: 12px 0;
+    margin: 0 0 16px;
   }
 
   ul > li + li {
-    margin-top: 12px;
+    margin-top: 8px;
   }
 
-  ul div {
+  .example-guess {
     display: grid;
     grid-template-columns: repeat(5, 1.5fr);
     gap: 6px;
+    align-self: flex-start;
     width: 100%;
     max-width: 180px;
-    margin-bottom: 4px;
-  }
-
-  ul p {
-    margin: 0;
+    user-select: none;
   }
 </style>
