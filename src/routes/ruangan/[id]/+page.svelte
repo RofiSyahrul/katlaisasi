@@ -5,6 +5,7 @@
   import { browser } from '$app/environment';
   import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
+  import HowToPlay from '$lib/components/HowToPlay.svelte';
   import Popup from '$lib/components/Popup.svelte';
   import Spinner from '$lib/components/Spinner.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
@@ -36,7 +37,8 @@
 
   let canEditName = true;
   let isAlreadyOpenedInOtherTab = false;
-  let isPopupOpen = !$userName;
+  let isEditNamePopupOpen = !$userName;
+  let isHelpPopupOpen = false;
   let isReady = false;
   let isUserNameSaved = false;
 
@@ -52,7 +54,7 @@
   $: editNameTitle = canEditName ? 'Edit nama kamu' : 'Kamu udah edit nama barusan';
   $: roomID = `katlaisasi-${$page.params.id}`;
   $: if (isUserNameSaved) {
-    isPopupOpen = false;
+    isEditNamePopupOpen = false;
     canEditName = false;
     if (browser) {
       localStorage.setItem(LAST_TIME_EDIT_NAME_STORAGE_KEY, new Date().toISOString());
@@ -84,7 +86,7 @@
   }
 
   function handleClickEditButton() {
-    isPopupOpen = true;
+    isEditNamePopupOpen = true;
     editNameTimer.reset();
   }
 
@@ -171,10 +173,29 @@
   {:else}
     <Spinner label="Sedang memuat" size="100px" />
   {/if}
-  <Popup isOpen={isPopupOpen} on:close={() => (isPopupOpen = false)}>
-    {#if isPopupOpen}
+  <button
+    aria-label="Bantuan"
+    class="help-button"
+    title="Bantuan"
+    on:click={() => (isHelpPopupOpen = true)}
+  >
+    <VisuallyHidden>Bantuan</VisuallyHidden>
+    <svg xmlns="http://www.w3.org/2000/svg" height="32" viewBox="0 0 24 24" width="32">
+      <path
+        fill="currentColor"
+        d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"
+      />
+    </svg>
+  </button>
+  <Popup isOpen={isEditNamePopupOpen} on:close={() => (isEditNamePopupOpen = false)}>
+    {#if isEditNamePopupOpen}
       <UserNameForm bind:hasBeenSaved={isUserNameSaved} shouldResetStateOnDestroy />
     {/if}
+  </Popup>
+  <Popup isOpen={isHelpPopupOpen} on:close={() => (isHelpPopupOpen = false)}>
+    <div class="how-to-play-container">
+      <HowToPlay />
+    </div>
   </Popup>
 {/if}
 
@@ -183,5 +204,37 @@
     min-height: unset;
     height: 32px;
     width: 32px;
+  }
+
+  .help-button {
+    position: fixed;
+    top: 8px;
+    right: 88px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: unset;
+    height: fit-content;
+    width: fit-content;
+    background-color: transparent;
+    color: var(--color-text-body);
+    box-shadow: var(--shadow-md);
+    border-radius: 50%;
+  }
+
+  .how-to-play-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  @media (max-width: 450px) {
+    .help-button {
+      right: unset;
+      left: 8px;
+    }
   }
 </style>
