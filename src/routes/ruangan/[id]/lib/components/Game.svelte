@@ -456,6 +456,9 @@
     >
       Lihat definisi
     </button>
+    {#if isHost}
+      <button on:click={handleClickPlayAgain}>Main lagi</button>
+    {/if}
   </div>
 {/if}
 
@@ -567,6 +570,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     text-align: center;
     box-shadow: var(--shadow-md);
   }
@@ -586,10 +590,6 @@
     max-width: 100%;
     height: 160px;
     background-color: var(--color-bg-body);
-  }
-
-  .game-description_answer p {
-    margin: 0 0 8px;
   }
 
   .game-description_invalid {
