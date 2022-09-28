@@ -437,11 +437,13 @@
 </section>
 
 {#if invalidGuessMessage}
-  <p class="game-description" transition:slide>
-    {@html invalidGuessMessage}
-  </p>
+  <div class="game-description_invalid" transition:slide>
+    <p>
+      {@html invalidGuessMessage}
+    </p>
+  </div>
 {:else if answerAndDefinitions}
-  <section class="game-description">
+  <div class="game-description_answer" transition:slide>
     <p>
       Jawaban:
       <strong style:text-transform="uppercase">
@@ -454,7 +456,7 @@
     >
       Lihat definisi
     </button>
-  </section>
+  </div>
 {/if}
 
 <Keyboard
@@ -547,20 +549,52 @@
     align-items: center;
     gap: 12px;
     width: 100%;
-    height: max(calc(100% - 250px), 250px);
+    height: max(calc(100% - 170px), 250px);
     padding: 4px 12px;
     border-radius: 4px;
     border: 1px solid var(--color-border);
   }
 
-  .game-description {
-    width: 100%;
-    margin: 12px 0 0;
+  .game-description_answer,
+  .game-description_invalid {
+    position: fixed;
+    z-index: 150;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    box-shadow: var(--shadow-md);
   }
 
-  .game-description p {
+  .game-description_answer > p,
+  .game-description_invalid > p {
+    color: transparent;
+    filter: invert(1) brightness(2.5) grayscale(1) contrast(9);
+    background: inherit;
+    background-clip: text;
+    margin: 0;
+  }
+
+  .game-description_answer {
+    bottom: 8px;
+    width: 450px;
+    max-width: 100%;
+    height: 160px;
+    background-color: var(--color-bg-body);
+  }
+
+  .game-description_answer p {
     margin: 0 0 8px;
+  }
+
+  .game-description_invalid {
+    bottom: 170px;
+    background-color: var(--color-danger);
   }
 
   .inactivity {
@@ -597,7 +631,7 @@
     }
 
     .card-list {
-      height: max(calc(100% - 310px), 250px);
+      height: max(calc(100% - 236px), 250px);
     }
   }
 </style>
