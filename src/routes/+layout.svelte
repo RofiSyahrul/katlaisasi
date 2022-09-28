@@ -117,7 +117,7 @@
     />
   {/each}
 
-  <link rel="mask-icon" href="/icons/savari-pinned-tab.svg" color={siteConfig.themeColor} />
+  <link rel="mask-icon" href="/icons/safari-pinned-tab.svg" color={siteConfig.themeColor} />
   <meta name="apple-mobile-web-app-title" content={siteConfig.name} />
   <meta name="application-name" content={siteConfig.name} />
   <meta name="msapplication-navbutton-color" content={siteConfig.themeColor} />
