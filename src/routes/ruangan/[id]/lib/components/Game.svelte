@@ -57,10 +57,6 @@
   let correctLetters: string[] = [];
   let exactLetters: string[] = [];
 
-  let newWrongLetters: string[] = [];
-  let newCorrectLetters: string[] = [];
-  let newExactLetters: string[] = [];
-
   const extraSecondsInactivity = 15;
   let isInactivityPopupOpen = false;
   let inactivityCountDown = extraSecondsInactivity;
@@ -105,7 +101,14 @@
   }
 
   $: if (isInitialLoad && $myState) {
-    $myState.get('guesses').forEach((guess) => {
+    const myActiveRow = $myState.get('activeRow');
+    const myCurrentRowStatus = $myState.get('currentRowStatus');
+
+    $myState.get('guesses').forEach((guess, index) => {
+      if (myActiveRow === index && myCurrentRowStatus === 'submitted') {
+        guessResultCurrentRow = guess;
+        return;
+      }
       const splitted = splitLettersFromGuess(guess);
       wrongLetters = [...wrongLetters, ...splitted.wrongLetters];
       correctLetters = [...correctLetters, ...splitted.correctLetters];
@@ -114,8 +117,8 @@
 
     presence.update((prev) => ({
       ...prev,
-      activeRow: $myState.get('activeRow'),
-      currentRowStatus: $myState.get('currentRowStatus'),
+      activeRow: myActiveRow,
+      currentRowStatus: myCurrentRowStatus,
       userRoundStatus: $myState.get('userRoundStatus')
     }));
 
@@ -180,14 +183,10 @@
     isAllUsersSubmittedCurrentRow &&
     guessResultCurrentRow.length === REQUIRED_GUESS_LENGTH
   ) {
-    wrongLetters = [...wrongLetters, ...newWrongLetters];
-    newWrongLetters = [];
-
-    correctLetters = [...correctLetters, ...newCorrectLetters];
-    newCorrectLetters = [];
-
-    exactLetters = [...exactLetters, ...newExactLetters];
-    newExactLetters = [];
+    const splitted = splitLettersFromGuess(guessResultCurrentRow);
+    wrongLetters = [...wrongLetters, ...splitted.wrongLetters];
+    correctLetters = [...correctLetters, ...splitted.correctLetters];
+    exactLetters = [...exactLetters, ...splitted.exactLetters];
 
     let prevActiveRow = 0;
     let nextActiveRow = 0;
@@ -240,10 +239,10 @@
   $: if ($myState) guessesByCurrentUser = $myState.get('guesses');
 
   let isAllUsersVictory = false;
-  $: if ($presence && $gameState) {
+  $: if ($presence && $gameState && $others) {
     if ($presence.userRoundStatus !== 'victory') {
       isAllUsersVictory = false;
-    } else if ($others?.count > 0) {
+    } else if ($others.count > 0) {
       isAllUsersVictory = [...$others].every(
         (other) => other.presence?.userRoundStatus === 'victory'
       );
@@ -273,12 +272,14 @@
   function handleGetGuessResponse(e: CustomEvent<KeyboardGameEvent['get-guess-response']>) {
     inactivityTimer.destroy();
     const { guessResult } = e.detail;
-    const splitted = splitLettersFromGuess(guessResult);
-
-    newWrongLetters = splitted.wrongLetters;
-    newCorrectLetters = splitted.correctLetters;
-    newExactLetters = splitted.exactLetters;
     guessResultCurrentRow = guessResult;
+    const myPrevGuesses = $myState.get('guesses');
+    const myNextGuesses = [...myPrevGuesses];
+    myNextGuesses[$presence.activeRow] = guessResult;
+    $myState.update({
+      guesses: [...myNextGuesses],
+      currentRowStatus: 'submitted'
+    });
     presence.update((prev) => ({ ...prev, currentRowStatus: 'submitted' }));
   }
 
