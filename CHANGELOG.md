@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.2.1...v1.3.0) (2022-09-28)
+
+
+### Features
+
+* add footer to homepage and how-to-play popup ([67cf940](https://github.com/RofiSyahrul/katlaisasi/commit/67cf940dd59b84c264e67bcbfc0e010dff187a91))
+* add how to play popup to game room page ([b9d3885](https://github.com/RofiSyahrul/katlaisasi/commit/b9d38859b1a4a48ed35e0d999f16a6a1024e086a))
+* add play again button in game description box ([ebeac6b](https://github.com/RofiSyahrul/katlaisasi/commit/ebeac6b524167ef2ca00b057b6262cb30e1a1215))
+* send submitted row to liveblocks ([7031f7e](https://github.com/RofiSyahrul/katlaisasi/commit/7031f7ecce48248ef026e4cf12bf20242be20fcb))
+
+
+### Bug Fixes
+
+* new joiner still can submit answer when round finished ([b11c956](https://github.com/RofiSyahrul/katlaisasi/commit/b11c9569d8528b1713f9f51c7db1d2df3ca3d31f))
+* remove null definition from define-answer response ([422dc82](https://github.com/RofiSyahrul/katlaisasi/commit/422dc824bcb85d8214a87bc1b425af366dcc5219))
+* safari mask icon href ([07a0b68](https://github.com/RofiSyahrul/katlaisasi/commit/07a0b685f4469cc1330ffc72b02a92fc4baefe22))
+* set highest z-index to popup component ([10ea94c](https://github.com/RofiSyahrul/katlaisasi/commit/10ea94ca6bd84b4784b6135be81f63d68755dff0))
+
+
+### Improvements
+
+* add box-shadow to theme switcher ([3c7b668](https://github.com/RofiSyahrul/katlaisasi/commit/3c7b668991daa029650b7e5a9f60145c55297ade))
+* move placement of game description box ([be7c889](https://github.com/RofiSyahrul/katlaisasi/commit/be7c8892b2680c9b8a07554fc156929107450d58))
+* simplify example in how-to-play section ([4a5d2a7](https://github.com/RofiSyahrul/katlaisasi/commit/4a5d2a7e616a33e0ebe9d7d4658fb7ca56bfcdd1))
+* update shadow variables to comply with theme ([019c5c5](https://github.com/RofiSyahrul/katlaisasi/commit/019c5c515cd24beffa4645f7581c0db1154adea5))
+
+
+### Docs
+
+* add website URL to README ([dc4e96b](https://github.com/RofiSyahrul/katlaisasi/commit/dc4e96b1cea8ce0877328cfb23fe16e18c7c041a))
+
 ### [1.2.1](https://github.com/RofiSyahrul/katlaisasi/compare/v1.2.0...v1.2.1) (2022-09-25)
 
 
