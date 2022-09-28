@@ -100,6 +100,7 @@
     animation-duration: 0.2s;
     animation-timing-function: ease-out;
     animation-fill-mode: both;
+    z-index: 1000;
 
     --popup-max-height: 90%;
     --popup-max-width: 95%;
