@@ -466,7 +466,8 @@
   on:change-guess={handleChangeGuess}
   on:get-guess-response={handleGetGuessResponse}
   on:invalid-guess={handleInvalidGuess}
-  isPlaying={$presence.userRoundStatus === 'playing'}
+  isPlaying={$presence.userRoundStatus === 'playing' &&
+    $gameState?.get('roundStatus') !== 'finished'}
   isSubmitted={$presence.currentRowStatus === 'submitted'}
   {correctLetters}
   {exactLetters}
