@@ -53,6 +53,7 @@
     border: 1px solid var(--color-border);
     background-color: var(--color-bg-body);
     color: var(--color-text-body);
+    box-shadow: var(--shadow-md);
     cursor: pointer;
   }
 
