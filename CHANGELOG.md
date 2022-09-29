@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.3.0...v1.4.0) (2022-09-29)
+
+
+### Features
+
+* show room form when a room has full capacity ([4283908](https://github.com/RofiSyahrul/katlaisasi/commit/42839084d901c9047602276448f2d42b2cf15929))
+
+
+### Bug Fixes
+
+* join_room event broadcasted twice ([8670fe5](https://github.com/RofiSyahrul/katlaisasi/commit/8670fe54e70c584237497ea4b110a535532531f0))
+* theme cookie in game room page always reset ([37140f5](https://github.com/RofiSyahrul/katlaisasi/commit/37140f521770c806f9da7cb25b705247693b591b))
+
+
+### Docs
+
+* update shown URL in README ([928a3f3](https://github.com/RofiSyahrul/katlaisasi/commit/928a3f38f1a604b2d0b40f2bb7cf4aeb6e1e079f))
+
+
+### Improvements
+
+* only load analytic script on production ([ff36286](https://github.com/RofiSyahrul/katlaisasi/commit/ff362862fe0a3b798ce65c57baa7b84e1a4f1ed0))
+
 ## [1.3.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.2.1...v1.3.0) (2022-09-28)
 
 
