@@ -5,6 +5,7 @@
   import Spinner from './Spinner.svelte';
 
   export let shouldDisableSubmit = false;
+  export let title = 'Siap adu mekanik?';
 
   let roomID: string;
   let roomIDErrorMessage = '';
@@ -32,7 +33,7 @@
   };
 </script>
 
-<h3>Siap adu mekanik?</h3>
+<h3>{title}</h3>
 
 <form action="/?/create-room" method="post" use:enhance={submitFn}>
   <button class="create-room-btn" disabled={!!submittedAction || shouldDisableSubmit}>

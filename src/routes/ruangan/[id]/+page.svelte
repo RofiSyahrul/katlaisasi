@@ -8,11 +8,13 @@
   import Footer from '$lib/components/Footer.svelte';
   import HowToPlay from '$lib/components/HowToPlay.svelte';
   import Popup from '$lib/components/Popup.svelte';
+  import RoomForm from '$lib/components/RoomForm.svelte';
   import Spinner from '$lib/components/Spinner.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
   import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
   import { ONE_MINUTE_IN_SECONDS, ONE_SECOND_IN_MS } from '$lib/constants/time';
   import { userName } from '$lib/stores';
+  import { noop } from '$lib/utils/noop';
   import Timer from '$lib/utils/timer';
   import type { PageServerData } from './$types';
   import Game from './lib/components/Game.svelte';
@@ -39,9 +41,12 @@
   let canEditName = true;
   let isAlreadyOpenedInOtherTab = false;
   let isEditNamePopupOpen = !$userName;
+  let isFullCapacity = false;
   let isHelpPopupOpen = false;
   let isReady = false;
   let isUserNameSaved = false;
+
+  let unsubscribeError = noop;
 
   const LAST_TIME_EDIT_NAME_STORAGE_KEY = 'TGFzdCB0aW1lIGVkaXQgbmFtZQ==';
 
@@ -83,6 +88,7 @@
 
   function handleBeforeUnload() {
     leaveRoom();
+    unsubscribeError();
     localStorage.removeItem(roomID);
   }
 
@@ -109,6 +115,13 @@
       }
     });
 
+    unsubscribeError();
+    unsubscribeError = room.subscribe('error', (error) => {
+      if (error.message.toLowerCase().startsWith('max number of concurrent connections')) {
+        isFullCapacity = true;
+      }
+    });
+
     if (browser) {
       room.getStorage().then(async ({ root }) => {
         const activeRound = root.get('gameState').get('activeRound');
@@ -122,6 +135,7 @@
           await goto(url, { replaceState: true });
           await invalidateAll();
         }
+
         const lastTimeEditName = localStorage.getItem(LAST_TIME_EDIT_NAME_STORAGE_KEY);
         if (lastTimeEditName) {
           canEditName = Date.now() > Date.parse(lastTimeEditName) + msCanEditNameAgain;
@@ -129,6 +143,7 @@
             editNameTimer.init();
           }
         }
+
         const user = room.getSelf();
         broadcastJoinRoomEvent(room, user);
         isReady = true;
@@ -141,11 +156,16 @@
 
   onDestroy(() => {
     leaveRoom();
+    unsubscribeError();
     if (browser) {
       localStorage.removeItem(roomID);
       window.removeEventListener('beforeunload', handleBeforeUnload);
     }
   });
+
+  $: if (isFullCapacity) {
+    leaveRoom();
+  }
 </script>
 
 {#if isAlreadyOpenedInOtherTab}
@@ -171,6 +191,10 @@
         </svg>
       </button>
     </Game>
+  {:else if isFullCapacity}
+    <section class="full-capacity-section">
+      <RoomForm title={`Ruangan ${$page.params.id} sudah penuh`} />
+    </section>
   {:else}
     <Spinner label="Sedang memuat" size="100px" />
   {/if}
@@ -242,10 +266,25 @@
     border-top: 1px solid var(--color-border);
   }
 
+  .full-capacity-section {
+    width: 480px;
+    max-width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
   @media (max-width: 450px) {
     .help-button {
       right: unset;
       left: 8px;
+    }
+
+    .full-capacity-section {
+      margin-top: 48px;
     }
   }
 </style>
