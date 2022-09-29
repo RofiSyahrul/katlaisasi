@@ -2,4 +2,7 @@
 
 Indonesian version of wordleoff
 
-Web: https://katlaisasi.rofi.link?utm_source=github&utm_medium=repository
+Let's try it out
+<a href="https://katlaisasi.rofi.link?utm_source=github&utm_medium=repository"
+  target="_blank"> here
+</a>
