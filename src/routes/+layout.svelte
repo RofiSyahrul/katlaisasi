@@ -150,16 +150,18 @@
     <meta name="robots" content="noindex" />
   {/if}
 
-  {@html loadScripts(
-    { script: partytown },
-    { partytown: true, src: `https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA4_ID}` },
-    {
-      partytown: true,
-      script:
-        `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}` +
-        `gtag('js', new Date()); gtag('config', '${PUBLIC_GA4_ID}');`
-    }
-  )}
+  {#if !dev}
+    {@html loadScripts(
+      { script: partytown },
+      { partytown: true, src: `https://www.googletagmanager.com/gtag/js?id=${PUBLIC_GA4_ID}` },
+      {
+        partytown: true,
+        script:
+          `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}` +
+          `gtag('js', new Date()); gtag('config', '${PUBLIC_GA4_ID}');`
+      }
+    )}
+  {/if}
 </svelte:head>
 
 <Header />
