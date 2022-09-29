@@ -5,14 +5,16 @@ import { cookieMaxAge } from '$lib/constants/time';
 
 export function setTheme(theme: Theme, cookies?: Cookies, isLocalhost?: boolean) {
   if (cookies) {
+    cookies.delete(THEME);
     cookies.set(THEME, theme, {
       httpOnly: false,
       maxAge: cookieMaxAge,
+      path: '/',
       secure: !isLocalhost
     });
   } else if (typeof document !== 'undefined') {
-    document.cookie = `${THEME}=${theme};path=/;max-age=${cookieMaxAge}${
-      isLocalhost ? '' : ';secure'
-    }`;
+    const secure = isLocalhost ? '' : ';secure';
+    document.cookie = `${THEME}=;expires=${new Date(0).toUTCString()}${secure}`;
+    document.cookie = `${THEME}=${theme};path=/;max-age=${cookieMaxAge}${secure}`;
   }
 }
