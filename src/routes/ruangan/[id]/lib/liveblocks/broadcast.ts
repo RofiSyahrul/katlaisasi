@@ -1,13 +1,17 @@
-import type { CurrentUser, RoomType } from './types';
+import type { CurrentUser, Presence, RoomType } from './types';
 
 let isJoinRoomEventBroadcasted = false;
 
-export function broadcastJoinRoomEvent(room: RoomType, user: CurrentUser) {
+export function broadcastJoinRoomEvent(room: RoomType, userOrPresence: CurrentUser | Presence) {
   if (isJoinRoomEventBroadcasted) return;
 
   let userName = '';
-  if (user) {
-    userName = user.presence?.userName || user.info.name;
+  if (userOrPresence) {
+    if ('info' in userOrPresence) {
+      userName = userOrPresence.presence?.userName || userOrPresence.info.name;
+    } else if ('userName' in userOrPresence) {
+      userName = userOrPresence.userName;
+    }
   }
 
   if (userName) {
