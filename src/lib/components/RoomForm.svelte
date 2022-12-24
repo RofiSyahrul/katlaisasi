@@ -16,7 +16,7 @@
     submittedAction = action.toString().endsWith('?/create-room') ? 'create' : 'join';
 
     return async ({ form, result }) => {
-      if (result.type !== 'invalid' && result.type !== 'error') {
+      if (result.type !== 'failure' && result.type !== 'error') {
         roomIDErrorMessage = '';
         await applyAction(result);
         submittedAction = null;
@@ -26,7 +26,7 @@
       form.reset();
       form.getElementsByTagName('input').item(0)?.focus();
       roomID = '';
-      if (result.type === 'invalid') roomIDErrorMessage = result.data?.message ?? '';
+      if (result.type === 'failure') roomIDErrorMessage = result.data?.message ?? '';
       else roomIDErrorMessage = 'Terjadi kesalahan. Silakan coba lagi';
       submittedAction = null;
     };

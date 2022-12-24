@@ -67,7 +67,7 @@
           guess = '';
         }
         isSubmitting = false;
-      } else if (result.type === 'invalid') {
+      } else if (result.type === 'failure') {
         dispatch('invalid-guess', { guess, message: result.data?.message ?? '' });
         isSubmitting = false;
       } else {

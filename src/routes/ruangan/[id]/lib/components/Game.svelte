@@ -5,6 +5,7 @@
   import { slide } from 'svelte/transition';
 
   import { browser, dev } from '$app/environment';
+  import { deserialize } from '$app/forms';
   import { goto, invalidateAll } from '$app/navigation';
   import { page } from '$app/stores';
   import Popup from '$lib/components/Popup.svelte';
@@ -302,7 +303,7 @@
         accept: 'application/json'
       },
       method: 'POST'
-    }).then((res) => res.json());
+    }).then(async (res) => deserialize(await res.text()));
 
     if (result.type !== 'success' || !result.data) return;
 

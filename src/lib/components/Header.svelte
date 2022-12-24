@@ -5,7 +5,7 @@
 </script>
 
 <header class:hideable-xs={$page.url.pathname.startsWith('/ruangan/')}>
-  <nav data-sveltekit-prefetch>
+  <nav data-sveltekit-preload-data>
     <svg viewBox="0 0 2 3" aria-hidden="true" width="2em" height="3em">
       <path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
     </svg>

@@ -1,4 +1,4 @@
-import { invalid, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 
 import { dev } from '$app/environment';
 import { USER_NAME } from '$lib/constants/cookie-keys';
@@ -20,7 +20,7 @@ export const actions: Actions = {
       await createRoom({ creator_id: locals.userid, room_id: roomID });
     } catch (err) {
       console.error(`Failed to create room ${roomID} by user ${locals.userid}. Error: ${err}`);
-      throw invalid(500, { message: 'Terjadi kesalahan' });
+      return fail(500, { message: 'Terjadi kesalahan' });
     }
 
     throw redirect(303, `/ruangan/${roomID}`);
@@ -31,12 +31,12 @@ export const actions: Actions = {
 
     const invalidMessage = `Ruangan ${roomID} tidak ditemukan`;
     if (!validRoomIDs.includes(roomID)) {
-      return invalid(404, { message: invalidMessage });
+      return fail(404, { message: invalidMessage });
     }
 
     const room = await getRoom(roomID);
     if (!room) {
-      return invalid(404, { message: invalidMessage });
+      return fail(404, { message: invalidMessage });
     }
 
     throw redirect(303, `/ruangan/${roomID}`);
@@ -45,7 +45,7 @@ export const actions: Actions = {
     const form = await request.formData();
     const userName = `${form.get('katlaisasi-userName') ?? ''}`.trim();
     if (!isUserNameValid(userName)) {
-      return invalid(400, { message: 'Nama tidak valid' });
+      return fail(400, { message: 'Nama tidak valid' });
     }
 
     locals.userName = userName;

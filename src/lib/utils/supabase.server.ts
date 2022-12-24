@@ -59,7 +59,7 @@ export async function getRoom(roomID: string): Promise<RoomItem | null> {
 
     return data[0];
   } catch (error) {
-    console.warn(`Failed to get room ${roomID}. Error: ${error}`);
+    console.warn(`Failed to get room ${roomID}. Error: ${error.message}`);
     return null;
   }
 }

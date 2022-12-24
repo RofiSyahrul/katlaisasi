@@ -1,4 +1,4 @@
-import { error, invalid } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 
 import { ANSWER_COOKIE_KEY } from '$env/static/private';
 import { MAX_ROUND_PER_ROOM } from '$lib/constants/game';
@@ -70,7 +70,7 @@ export const actions: Actions = {
     const round = getRound(url);
     const encodedAnswer = cookies.get(getKey(params.id, round));
     if (!encodedAnswer) {
-      return invalid(400);
+      return fail(400);
     }
 
     const answer = decode(encodedAnswer);
@@ -101,7 +101,9 @@ export const actions: Actions = {
       cachedDefinitionsMap.set(answer, response.definitions);
       return response;
     } catch (error) {
-      console.error(`Failed to fetch definitions of "${answer}" from makna. Error: ${error}`);
+      console.error(
+        `Failed to fetch definitions of "${answer}" from makna. Error: ${error.message}`
+      );
       return response;
     }
   },
@@ -114,14 +116,14 @@ export const actions: Actions = {
 
     if (!words.includes(guess)) {
       invalidResponse.message = `<strong>${guess.toUpperCase()}</strong> ga ada di KBBI`;
-      return invalid(400, invalidResponse);
+      return fail(400, invalidResponse);
     }
 
     const round = getRound(url);
     const encodedAnswer = cookies.get(getKey(params.id, round));
     if (!encodedAnswer) {
       invalidResponse.message = 'Terjadi kesalahan. Tolong refresh dulu.';
-      return invalid(400, invalidResponse);
+      return fail(400, invalidResponse);
     }
 
     const answer = decode(encodedAnswer);
