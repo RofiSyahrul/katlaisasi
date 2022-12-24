@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.4.0...v2.0.0) (2022-12-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* upgrade sveltekit to v1 and vite to v4
+
+### Improvements
+
+* upgrade sveltekit and vite to latest version ([954387b](https://github.com/RofiSyahrul/katlaisasi/commit/954387b96397fcd1c93279c1e1d63f27e54d4bb2))
+
 ## [1.4.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.3.0...v1.4.0) (2022-09-29)
 
 
