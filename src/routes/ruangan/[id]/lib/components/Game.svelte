@@ -350,15 +350,13 @@
         isAnswerDefinitionPopupOpen = false;
         inactivityTimer.reset();
 
-        if (isHost) {
-          $usersMap.forEach((userState) => {
-            userState.update({
-              ...baseInitialUserState,
-              guesses: [],
-              userName: userState.get('userName')
-            });
-          });
+        $myState.update({
+          ...baseInitialUserState,
+          guesses: [],
+          userName: $presence.userName
+        });
 
+        if (isHost) {
           $gameState.update({
             activeRound: nextRound,
             activeRow: 0,
