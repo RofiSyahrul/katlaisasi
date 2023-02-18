@@ -30,7 +30,7 @@
   bind:value={$theme}
   on:change={handleChangeTheme}
   class:mounted
-  label="Pilih mode"
+  title="Pilih mode"
   tabindex="0"
 >
   {#each themeOptions as { label, value } (value)}

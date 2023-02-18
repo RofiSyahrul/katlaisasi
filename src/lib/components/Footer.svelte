@@ -5,7 +5,11 @@
 <footer style:width={isFullWidth ? '100%' : undefined}>
   <p>
     Dikembangkan oleh
-    <a href="https://github.com/RofiSyahrul?utm_source=katlaisasi&utm_medium=web" target="_blank">
+    <a
+      href="https://rofisyahrul.com?utm_source=katlaisasi&utm_medium=web"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       Rofi
     </a>
   </p>
@@ -14,6 +18,7 @@
     <a
       href="https://github.com/RofiSyahrul/katlaisasi?utm_source=katlaisasi&utm_medium=web"
       target="_blank"
+      rel="noopener noreferrer"
     >
       GitHub
     </a>
