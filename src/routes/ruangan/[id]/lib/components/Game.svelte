@@ -313,7 +313,10 @@
     }
   }
 
-  $: if (browser && $gameState?.get('roundStatus') === 'finished') {
+  $: isFinished = $gameState?.get('roundStatus') === 'finished';
+  $: isVictory = $presence.userRoundStatus === 'victory';
+
+  $: if (browser && (isFinished || isVictory)) {
     inactivityTimer.destroy();
     fetchAnswerAndDefinitions();
   }
@@ -458,7 +461,7 @@
     >
       Lihat definisi
     </button>
-    {#if isHost}
+    {#if isHost && isFinished}
       <button on:click={handleClickPlayAgain}>Main lagi</button>
     {/if}
   </div>
@@ -468,8 +471,7 @@
   on:change-guess={handleChangeGuess}
   on:get-guess-response={handleGetGuessResponse}
   on:invalid-guess={handleInvalidGuess}
-  isPlaying={$presence.userRoundStatus === 'playing' &&
-    $gameState?.get('roundStatus') !== 'finished'}
+  isPlaying={$presence.userRoundStatus === 'playing' && !isFinished}
   isSubmitted={$presence.currentRowStatus === 'submitted'}
   {correctLetters}
   {exactLetters}
