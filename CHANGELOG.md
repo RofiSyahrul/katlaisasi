@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0](https://github.com/RofiSyahrul/katlaisasi/compare/v2.0.0...v2.1.0) (2023-02-19)
+
+
+### Features
+
+* add score for each players ([9afb8e1](https://github.com/RofiSyahrul/katlaisasi/commit/9afb8e151bb84098569c9704130ffbf5b9e25ae0))
+* show answer and definition when current user is victory ([8ccdadf](https://github.com/RofiSyahrul/katlaisasi/commit/8ccdadf8a1cacd5e3325a829765f819f7b34dfc6))
+
+
+### Bug Fixes
+
+* error when moving to next round ([6b87bb3](https://github.com/RofiSyahrul/katlaisasi/commit/6b87bb352be4ff914736c9a769038616fddbc9d9))
+
+
+### Improvements
+
+* change creator URL ([acdb66f](https://github.com/RofiSyahrul/katlaisasi/commit/acdb66fed5c8a3cf1ea7b51b558cabd0f274f6ae))
+
 ## [2.0.0](https://github.com/RofiSyahrul/katlaisasi/compare/v1.4.0...v2.0.0) (2022-12-24)
 
 
