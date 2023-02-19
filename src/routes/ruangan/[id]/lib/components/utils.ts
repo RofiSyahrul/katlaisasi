@@ -21,3 +21,8 @@ export function splitLettersFromGuess(guess: GuessItem[]) {
 
   return { correctLetters, exactLetters, wrongLetters };
 }
+
+export function getVictoryScore(activeRow: number) {
+  const scores = [100, 75, 55, 40, 30, 25];
+  return scores[activeRow] || scores[scores.length - 1];
+}

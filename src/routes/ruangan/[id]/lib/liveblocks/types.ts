@@ -24,6 +24,7 @@ export type GameStateLiveObject = LiveObject<GameState>;
 
 export type UserState = Presence & {
   guesses: GuessItem[][];
+  score: number;
 };
 
 export type UserStateLiveObject = LiveObject<UserState>;

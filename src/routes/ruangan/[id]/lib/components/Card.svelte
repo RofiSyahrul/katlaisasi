@@ -8,6 +8,7 @@
   export let isCurrentUserPlaying: boolean;
   export let isHost: boolean;
   export let isVictory: boolean;
+  export let score: number;
   export let submittedRow: number;
   export let userName: string;
 
@@ -26,6 +27,7 @@
       {userName || 'Unknown'}
     </h4>
     <div class="card__header__right">
+      {score}
       {#if isHost}
         <div title="Host">
           <svg
@@ -102,6 +104,7 @@
   .card__header__right {
     display: flex;
     gap: 4px;
+    align-items: center;
   }
 
   .card__guess-board {

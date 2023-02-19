@@ -30,7 +30,7 @@
   import Card from './Card.svelte';
   import InviteButton from './InviteButton.svelte';
   import Keyboard, { type KeyboardGameEvent } from './Keyboard.svelte';
-  import { splitLettersFromGuess } from './utils';
+  import { getVictoryScore, splitLettersFromGuess } from './utils';
 
   export let hostID: string;
   export let isUserNameUpdated = false;
@@ -193,6 +193,7 @@
     let nextActiveRow = 0;
     let nextRowStatus: RowStatus = 'submitted';
     let userLatestRoundStatus: UserRoundStatus = 'playing';
+    let newScore = $myState.get('score') || 0;
 
     inactivityTimer.reset();
 
@@ -204,6 +205,8 @@
       if (isVictory) {
         inactivityTimer.destroy();
         userLatestRoundStatus = 'victory';
+        const score = getVictoryScore(prevActiveRow);
+        newScore += score;
       } else if (nextActiveRow > TOTAL_GUESS_ROW) {
         inactivityTimer.destroy();
         userLatestRoundStatus = 'defeat';
@@ -228,6 +231,7 @@
         activeRow: nextActiveRow,
         currentRowStatus: nextRowStatus,
         guesses: [...myNextGuesses],
+        score: newScore,
         userName: $presence.userName,
         userRoundStatus: userLatestRoundStatus
       })
@@ -353,6 +357,7 @@
         $myState.update({
           ...baseInitialUserState,
           guesses: [],
+          score: $myState.get('score') || 0,
           userName: $presence.userName
         });
 
@@ -416,6 +421,7 @@
       {isCurrentUserPlaying}
       {isHost}
       isVictory={$presence.userRoundStatus === 'victory'}
+      score={$myState?.get('score') || 0}
       submittedRow={$presence.currentRowStatus === 'submitted' ? $presence.activeRow : -1}
       userName={$presence.userName ?? $self.info.name ?? $userName}
     >
@@ -431,6 +437,7 @@
           {isCurrentUserPlaying}
           isHost={hostConnectionID === connectionId}
           isVictory={presence.userRoundStatus === 'victory'}
+          score={$usersMap.get(id)?.get('score') || 0}
           submittedRow={presence.currentRowStatus === 'submitted' ? presence.activeRow : -1}
           userName={presence.userName || info.name}
         />
