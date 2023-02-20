@@ -12,24 +12,26 @@
   import { showSnackbar } from '$lib/components/snackbar';
   import Spinner from '$lib/components/Spinner.svelte';
   import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
-  import { REQUIRED_GUESS_LENGTH, TOTAL_GUESS_ROW } from '$lib/constants/game';
+  import { MAX_ROUND_PER_ROOM, REQUIRED_GUESS_LENGTH, TOTAL_GUESS_ROW } from '$lib/constants/game';
   import { ONE_MINUTE_IN_SECONDS, ONE_SECOND_IN_MS } from '$lib/constants/time';
   import { userName } from '$lib/stores';
   import type { GuessItem } from '$lib/types/game';
   import Timer from '$lib/utils/timer';
-  import type { DefineAnswerSuccessResponse } from '../../types';
-  import { getRoomContext } from '../liveblocks/context';
-  import { baseInitialUserState } from '../liveblocks/initials';
-  import type { RowStatus, UserRoundStatus } from '../liveblocks/types';
-  import { useGameState } from '../liveblocks/use-game-state';
-  import { useMyPresence } from '../liveblocks/use-my-presence';
-  import { useMyState } from '../liveblocks/use-my-state';
-  import { useOthers } from '../liveblocks/use-others';
-  import { useSelf } from '../liveblocks/use-self';
-  import { useUsersMap } from '../liveblocks/use-users-map';
-  import Card from './Card.svelte';
-  import InviteButton from './InviteButton.svelte';
-  import Keyboard, { type KeyboardGameEvent } from './Keyboard.svelte';
+  import Card from './lib/components/Card.svelte';
+  import InviteButton from './lib/components/InviteButton.svelte';
+  import Keyboard, { type KeyboardGameEvent } from './lib/components/Keyboard.svelte';
+  import Leaderboard from './lib/components/Leaderboard.svelte';
+  import { getRoomContext } from './lib/liveblocks/context';
+  import { baseInitialUserState } from './lib/liveblocks/initials';
+  import type { RowStatus, UserRoundStatus } from './lib/liveblocks/types';
+  import { useGameState } from './lib/liveblocks/use-game-state';
+  import { useLeaderboardData } from './lib/liveblocks/use-leaderboard-data';
+  import { useMyPresence } from './lib/liveblocks/use-my-presence';
+  import { useMyState } from './lib/liveblocks/use-my-state';
+  import { useOthers } from './lib/liveblocks/use-others';
+  import { useSelf } from './lib/liveblocks/use-self';
+  import { useUsersMap } from './lib/liveblocks/use-users-map';
+  import type { DefineAnswerSuccessResponse } from './types';
   import { getVictoryScore, splitLettersFromGuess } from './utils';
 
   export let hostID: string;
@@ -44,10 +46,17 @@
   const usersMap = useUsersMap();
   const myState = useMyState($self?.id);
 
+  const leaderboardData = useLeaderboardData({
+    othersStore: others,
+    selfStore: self,
+    usersMapStore: usersMap
+  });
+
   let isInitialLoad = true;
   let answerAndDefinitions: DefineAnswerSuccessResponse | null = null;
-  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  let AnswerDefinitionsComponent: typeof import('./AnswerDefinitions.svelte').default | undefined;
+  let AnswerDefinitionsComponent: // eslint-disable-next-line @typescript-eslint/consistent-type-imports
+  typeof import('./lib/components/AnswerDefinitions.svelte').default | undefined;
+
   let isAnswerDefinitionPopupOpen = false;
 
   let guessesByCurrentUser: GuessItem[][] = [];
@@ -298,6 +307,50 @@
     }));
   }
 
+  function resetState() {
+    wrongLetters = [];
+    correctLetters = [];
+    exactLetters = [];
+    guessesByCurrentUser = [];
+    answerAndDefinitions = null;
+    isAnswerDefinitionPopupOpen = false;
+    inactivityTimer.reset();
+  }
+
+  function goToRound(round: number) {
+    const url = $page.url;
+    url.searchParams.set('round', `${round}`);
+    goto(url, { replaceState: true })
+      .then(invalidateAll)
+      .then(() => {
+        resetState();
+        if (isHost) {
+          $gameState.update({
+            activeRound: round,
+            activeRow: 0,
+            roundStatus: 'playing'
+          });
+        }
+      });
+  }
+
+  function handleFinishGame() {
+    const url = $page.url;
+    url.searchParams.delete('round');
+    url.searchParams.set('finished', 'true');
+    goto(url, { replaceState: true })
+      .then(invalidateAll)
+      .then(() => {
+        resetState();
+        if (isHost) {
+          $gameState.update({
+            roundStatus: 'finished',
+            status: 'finished'
+          });
+        }
+      });
+  }
+
   async function fetchAnswerAndDefinitions() {
     const { pathname, searchParams } = $page.url;
     const resource = `${pathname}?/define-answer&${searchParams.toString()}`;
@@ -313,16 +366,18 @@
 
     answerAndDefinitions = result.data;
     if (!AnswerDefinitionsComponent) {
-      AnswerDefinitionsComponent = (await import('./AnswerDefinitions.svelte')).default;
+      AnswerDefinitionsComponent = (await import('./lib/components/AnswerDefinitions.svelte'))
+        .default;
     }
   }
 
   $: isFinished = $gameState?.get('roundStatus') === 'finished';
   $: isVictory = $presence.userRoundStatus === 'victory';
+  $: isGameFinished = $gameState?.get('status') === 'finished';
 
   $: if (browser && (isFinished || isVictory)) {
     inactivityTimer.destroy();
-    fetchAnswerAndDefinitions();
+    if (!isGameFinished) fetchAnswerAndDefinitions();
   }
 
   function handleClickPlayAgain() {
@@ -337,46 +392,30 @@
     inactivityTimer.reset();
   }
 
-  $: isCurrentUserPlaying = $presence.userRoundStatus === 'playing';
-
   $: isWaitingForNextRound = $gameState?.get('roundStatus') === 'waiting-for-next-round';
   $: if (browser && isWaitingForNextRound) {
-    const url = $page.url;
+    $myState.update({
+      ...baseInitialUserState,
+      score: $myState.get('score') || 0,
+      userName: $presence.userName
+    });
+
+    presence.update((prev) => ({
+      ...prev,
+      activeRow: baseInitialUserState.activeRow,
+      currentRowStatus: baseInitialUserState.currentRowStatus,
+      userRoundStatus: baseInitialUserState.userRoundStatus
+    }));
+
     const nextRound = $gameState.get('activeRound') + 1;
-    url.searchParams.set('round', `${nextRound}`);
-    goto(url, { replaceState: true })
-      .then(invalidateAll)
-      .then(() => {
-        wrongLetters = [];
-        correctLetters = [];
-        exactLetters = [];
-        answerAndDefinitions = null;
-        isAnswerDefinitionPopupOpen = false;
-        inactivityTimer.reset();
-
-        $myState.update({
-          ...baseInitialUserState,
-          guesses: [],
-          score: $myState.get('score') || 0,
-          userName: $presence.userName
-        });
-
-        if (isHost) {
-          $gameState.update({
-            activeRound: nextRound,
-            activeRow: 0,
-            roundStatus: 'playing'
-          });
-        }
-
-        presence.update((prev) => ({
-          ...prev,
-          activeRow: baseInitialUserState.activeRow,
-          currentRowStatus: baseInitialUserState.currentRowStatus,
-          userRoundStatus: baseInitialUserState.userRoundStatus
-        }));
-      });
+    if (nextRound < MAX_ROUND_PER_ROOM) {
+      goToRound(nextRound);
+    } else {
+      handleFinishGame();
+    }
   }
+
+  $: isCurrentUserPlaying = $presence.userRoundStatus === 'playing';
 
   onMount(() => {
     inactivityTimer.init();
@@ -401,6 +440,8 @@
     </strong>
     {#if $gameState.get('roundStatus') !== 'finished'}
       <p>Masih adu mekanik</p>
+    {:else if isGameFinished}
+      <p>Permainan Selesai</p>
     {:else if isHost}
       <button on:click={handleClickPlayAgain}>Main lagi</button>
     {:else}
@@ -413,36 +454,57 @@
   <InviteButton />
 </section>
 
-<section class="card-list scrollable">
-  {#if $self}
-    <Card
-      guesses={guessesByCurrentUser}
-      isCurrentUser
-      {isCurrentUserPlaying}
-      {isHost}
-      isVictory={$presence.userRoundStatus === 'victory'}
-      score={$myState?.get('score') || 0}
-      submittedRow={$presence.currentRowStatus === 'submitted' ? $presence.activeRow : -1}
-      userName={$presence.userName ?? $self.info.name ?? $userName}
-    >
-      <slot name="editButton" slot="editButton" />
-    </Card>
-  {/if}
-  {#if $others && $usersMap}
-    {#each [...$others] as { connectionId, id, info, presence } (connectionId)}
-      {#if presence}
+<section class="game">
+  <div class="leader-board scrollable">
+    <Leaderboard data={$leaderboardData} />
+  </div>
+
+  {#if isGameFinished}
+    {@const winner = $leaderboardData[0]}
+    {@const winnerName = winner?.userName}
+    {@const winnerScore = winner?.score}
+    {#if winnerName && winnerScore}
+      <div>
+        Selamat dulu dong <strong>{winnerName}</strong>!! Juara dengan skor
+        <strong>{winnerScore}</strong> 🎉 🏆
+      </div>
+    {:else}
+      <div>Selesai</div>
+    {/if}
+  {:else}
+    <div class="card-list scrollable">
+      {#if $self}
         <Card
-          guesses={$usersMap.get(id)?.get('guesses')}
-          isCurrentUser={false}
+          guesses={guessesByCurrentUser}
+          isCurrentUser
           {isCurrentUserPlaying}
-          isHost={hostConnectionID === connectionId}
-          isVictory={presence.userRoundStatus === 'victory'}
-          score={$usersMap.get(id)?.get('score') || 0}
-          submittedRow={presence.currentRowStatus === 'submitted' ? presence.activeRow : -1}
-          userName={presence.userName || info.name}
-        />
+          {isHost}
+          isVictory={$presence.userRoundStatus === 'victory'}
+          score={$myState?.get('score') || 0}
+          submittedRow={$presence.currentRowStatus === 'submitted' ? $presence.activeRow : -1}
+          userName={$presence.userName ?? $self.info.name ?? $userName}
+        >
+          <slot name="editButton" slot="editButton" />
+        </Card>
       {/if}
-    {/each}
+
+      {#if $others && $usersMap}
+        {#each [...$others] as { connectionId, id, info, presence } (connectionId)}
+          {#if presence}
+            <Card
+              guesses={$usersMap.get(id)?.get('guesses')}
+              isCurrentUser={false}
+              {isCurrentUserPlaying}
+              isHost={hostConnectionID === connectionId}
+              isVictory={presence.userRoundStatus === 'victory'}
+              score={$usersMap.get(id)?.get('score') || 0}
+              submittedRow={presence.currentRowStatus === 'submitted' ? presence.activeRow : -1}
+              userName={presence.userName || info.name}
+            />
+          {/if}
+        {/each}
+      {/if}
+    </div>
   {/if}
 </section>
 
@@ -467,21 +529,28 @@
       Lihat definisi
     </button>
     {#if isHost && isFinished}
-      <button on:click={handleClickPlayAgain}>Main lagi</button>
+      <div class="host-actions">
+        <button on:click={handleClickPlayAgain}>Main lagi</button>
+        <button on:click={handleFinishGame} style:background-color="var(--color-danger)">
+          Udahan aja
+        </button>
+      </div>
     {/if}
   </div>
 {/if}
 
-<Keyboard
-  on:change-guess={handleChangeGuess}
-  on:get-guess-response={handleGetGuessResponse}
-  on:invalid-guess={handleInvalidGuess}
-  isPlaying={$presence.userRoundStatus === 'playing' && !isFinished}
-  isSubmitted={$presence.currentRowStatus === 'submitted'}
-  {correctLetters}
-  {exactLetters}
-  {wrongLetters}
-/>
+{#if !isGameFinished}
+  <Keyboard
+    on:change-guess={handleChangeGuess}
+    on:get-guess-response={handleGetGuessResponse}
+    on:invalid-guess={handleInvalidGuess}
+    isPlaying={$presence.userRoundStatus === 'playing' && !isFinished}
+    isSubmitted={$presence.currentRowStatus === 'submitted'}
+    {correctLetters}
+    {exactLetters}
+    {wrongLetters}
+  />
+{/if}
 
 <Popup isOpen={isAnswerDefinitionPopupOpen} on:close={() => (isAnswerDefinitionPopupOpen = false)}>
   {#if answerAndDefinitions && AnswerDefinitionsComponent}
@@ -556,14 +625,33 @@
     margin: 0;
   }
 
+  .game {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    height: max(calc(100% - 170px), 250px);
+    padding: 12px;
+  }
+
+  .leader-board {
+    display: none;
+    width: 320px;
+    height: 100%;
+    padding: 4px 12px;
+  }
+
   .card-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     align-items: center;
     gap: 12px;
-    width: 100%;
-    height: max(calc(100% - 170px), 250px);
+    flex: 1;
+    height: 100%;
     padding: 4px 12px;
+  }
+
+  .game,
+  .leader-board {
     border-radius: 4px;
     border: 1px solid var(--color-border);
   }
@@ -607,6 +695,12 @@
     background-color: var(--color-danger);
   }
 
+  .host-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
   .inactivity {
     display: flex;
     flex-direction: column;
@@ -629,6 +723,12 @@
     min-height: unset;
     padding: 4px;
     box-shadow: var(--shadow-md);
+  }
+
+  @media (min-width: 640px) {
+    .leader-board {
+      display: block;
+    }
   }
 
   @media (max-width: 450px) {

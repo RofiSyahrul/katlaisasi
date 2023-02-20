@@ -23,11 +23,13 @@
 
 <div class="card" class:card_current-user={isCurrentUser}>
   <div class="card__header">
-    <h4 class="card__header__title" title={userName}>
-      {userName || 'Unknown'}
-    </h4>
-    <div class="card__header__right">
+    <div class="card__header__left">
+      <h4 class="card__header__title" title={userName}>
+        {userName || 'Unknown'}
+      </h4>
       {score}
+    </div>
+    <div class="card__header__right">
       {#if isHost}
         <div title="Host">
           <svg
@@ -88,14 +90,18 @@
     justify-content: space-between;
     gap: 4px;
     width: 100%;
-    height: 48px;
+    height: 56px;
     padding: 4px;
     border-bottom: 1px solid var(--color-border);
   }
 
-  .card__header__title {
-    margin: 0;
+  .card__header__left {
     flex: 1;
+  }
+
+  .card__header__title {
+    margin: 0 0 4px;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

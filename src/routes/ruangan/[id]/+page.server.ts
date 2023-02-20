@@ -58,8 +58,11 @@ export const load: PageServerLoad = async ({ cookies, locals, params, url }) => 
     cookies.set(key, encodedAnswer, { secure: url.hostname !== 'localhost' });
   }
 
+  const isFinished = url.searchParams.get('finished') === 'true';
+
   return {
     hostID: room.creator_id,
+    isFinished,
     round,
     seo: { shouldBlockSearchIndex: true, title: 'Adu Mekanik Katla' }
   };

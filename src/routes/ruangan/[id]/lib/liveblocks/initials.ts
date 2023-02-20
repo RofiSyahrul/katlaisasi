@@ -5,7 +5,8 @@ import type { GameState, Presence, UserState, UserStateLiveObject } from './type
 export const initialGameState = new LiveObject<GameState>({
   activeRound: 0,
   activeRow: 0,
-  roundStatus: 'playing'
+  roundStatus: 'playing',
+  status: 'playing'
 });
 
 export const initialUsersMap = new LiveMap<string, UserStateLiveObject>();

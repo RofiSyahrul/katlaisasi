@@ -12,12 +12,13 @@
   import Spinner from '$lib/components/Spinner.svelte';
   import UserNameForm from '$lib/components/UserNameForm.svelte';
   import VisuallyHidden from '$lib/components/VisuallyHidden.svelte';
+  import { MAX_ROUND_PER_ROOM } from '$lib/constants/game';
   import { ONE_MINUTE_IN_SECONDS, ONE_SECOND_IN_MS } from '$lib/constants/time';
   import { userName } from '$lib/stores';
   import { noop } from '$lib/utils/noop';
   import Timer from '$lib/utils/timer';
   import type { PageServerData } from './$types';
-  import Game from './lib/components/Game.svelte';
+  import Game from './Game.svelte';
   import { broadcastJoinRoomEvent } from './lib/liveblocks/broadcast';
   import { setRoomContext } from './lib/liveblocks/context';
   import {
@@ -124,14 +125,27 @@
 
     if (browser) {
       room.getStorage().then(async ({ root }) => {
+        const gameStatus = root.get('gameState').get('status');
         const activeRound = root.get('gameState').get('activeRound');
-        if (data.round !== activeRound) {
+
+        if ((gameStatus === 'finished' || activeRound >= MAX_ROUND_PER_ROOM) && !data.isFinished) {
+          const url = $page.url;
+          url.searchParams.delete('round');
+          url.searchParams.set('finished', 'true');
+          await goto(url, { replaceState: true });
+          await invalidateAll();
+        } else if (data.round !== activeRound && gameStatus !== 'finished') {
           const url = $page.url;
           if (activeRound > 0) {
             url.searchParams.set('round', `${activeRound}`);
           } else {
             url.searchParams.delete('round');
           }
+
+          if (data.isFinished) {
+            url.searchParams.delete('finished');
+          }
+
           await goto(url, { replaceState: true });
           await invalidateAll();
         }

@@ -14,7 +14,7 @@ export function setTheme(theme: Theme, cookies?: Cookies, isLocalhost?: boolean)
     });
   } else if (typeof document !== 'undefined') {
     const secure = isLocalhost ? '' : ';secure';
-    document.cookie = `${THEME}=;expires=${new Date(0).toUTCString()}${secure}`;
+    document.cookie = `${THEME}=;path=/;expires=${new Date(0).toUTCString()}${secure}`;
     document.cookie = `${THEME}=${theme};path=/;max-age=${cookieMaxAge}${secure}`;
   }
 }

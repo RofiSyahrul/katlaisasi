@@ -385,15 +385,22 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@liveblocks/client@^0.17.11":
-  version "0.17.11"
-  resolved "https://registry.yarnpkg.com/@liveblocks/client/-/client-0.17.11.tgz#5130644a11827c4dfa0014bb4ab080e9bdd2e833"
-  integrity sha512-ToVzVa6KZE+TnElkV58uTPSKymgQ/fC6mRPtNKGA/SHC8BdgNbULHBV5Van4XWKnoC4BMyC+TAcukwEaeNxREw==
+"@liveblocks/client@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/client/-/client-1.0.0.tgz#c6b9cff4288fbe57771c032f7ff8df6af22e6866"
+  integrity sha512-nDjwNqzYdHMjSakrm8f6mk5EEt6SAt5SaaSTRZ5aKVqLZ99FTAWqrIZyAvHap4yMwNGhpfH5FeYzVCzxjvt+NA==
+  dependencies:
+    "@liveblocks/core" "1.0.0"
 
-"@liveblocks/node@^0.17.11":
-  version "0.17.11"
-  resolved "https://registry.yarnpkg.com/@liveblocks/node/-/node-0.17.11.tgz#c91d635b7d0654f451053128fb26c981cf52d758"
-  integrity sha512-9ws15L5lZzrJaEQHCQJH9tYZuQR3DJHQ92JrX+GJPOMAxt9tGAqhnXuZGohywss5YALoF0Prw+glIwrtn9xVZw==
+"@liveblocks/core@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/core/-/core-1.0.0.tgz#a977f4fb45c403357ff96d50ece3bf7f4a2f30ee"
+  integrity sha512-Y7shkoOqc629/6dAjqTQkWm65GDCm72NBs1NTM3m6SieBAzK5NJ0pAAeL4Ct1HB85rO1gbl6hbAMwXtJkpWVrA==
+
+"@liveblocks/node@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@liveblocks/node/-/node-1.0.0.tgz#673f1226fbfb687a16e7eb1629099f0428332ad0"
+  integrity sha512-GKvfrY02eJ+YI7Q8psz5hD80J3gIridmeTA9UYV6n+NYbCp0Jo2GS1LlUTtzw8mto6cRFAG6gVPSe8tVLej+Mw==
   dependencies:
     node-fetch "^2.6.1"
 

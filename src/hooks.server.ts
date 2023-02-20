@@ -9,7 +9,10 @@ import { isUserNameValid } from '$lib/utils/user-name';
 export const handle: Handle = async ({ event, resolve }) => {
   let userName = event.cookies.get(USER_NAME) ?? '';
   if (userName && !isUserNameValid(userName)) {
-    event.cookies.delete(USER_NAME);
+    event.cookies.delete(USER_NAME, {
+      path: '/',
+      secure: !dev
+    });
     userName = '';
   }
 

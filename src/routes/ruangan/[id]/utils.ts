@@ -23,6 +23,6 @@ export function splitLettersFromGuess(guess: GuessItem[]) {
 }
 
 export function getVictoryScore(activeRow: number) {
-  const scores = [100, 75, 55, 40, 30, 25];
-  return scores[activeRow] || scores[scores.length - 1];
+  const scores = [85, 60, 40, 25, 15, 10];
+  return scores[activeRow] ?? 0;
 }

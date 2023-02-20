@@ -7,7 +7,7 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "dev": "vite dev",
-    "format": "prettier --write .",
+    "format": "prettier --write ./src/**",
     "fetch-words": "node -r esbuild-register scripts/fetch-words.ts",
     "generate-theme-css": "node -r esbuild-register scripts/generate-theme-css.ts",
     "lint": "prettier --check . && eslint .",
@@ -59,8 +59,8 @@
   "type": "module",
   "dependencies": {
     "@builder.io/partytown": "^0.7.0",
-    "@liveblocks/client": "^0.17.11",
-    "@liveblocks/node": "^0.17.11",
+    "@liveblocks/client": "1.0.0",
+    "@liveblocks/node": "1.0.0",
     "@supabase/supabase-js": "^1.35.6",
     "fast-deep-equal": "^3.1.3"
   },
