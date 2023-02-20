@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://github.com/RofiSyahrul/katlaisasi/compare/v2.1.1...v2.2.0) (2023-02-20)
+
+
+### Features
+
+* show leaderboard and able to finish the game before 10th round ([00c9f7c](https://github.com/RofiSyahrul/katlaisasi/commit/00c9f7c0ba5624b612a7cdf7c193e9b3fd6e0c98))
+
 ### [2.1.1](https://github.com/RofiSyahrul/katlaisasi/compare/v2.1.0...v2.1.1) (2023-02-20)
 
 ## [2.1.0](https://github.com/RofiSyahrul/katlaisasi/compare/v2.0.0...v2.1.0) (2023-02-19)
