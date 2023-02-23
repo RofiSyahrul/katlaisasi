@@ -135,18 +135,6 @@
     isInitialLoad = false;
   }
 
-  $: if ($usersMap && $gameState) {
-    let nextActiveRow = 0;
-    $usersMap.forEach((userState) => {
-      const activeRow = Math.min(userState.get('activeRow'), TOTAL_GUESS_ROW);
-      if (activeRow > nextActiveRow) nextActiveRow = activeRow;
-    });
-
-    if ($gameState.get('activeRow') < nextActiveRow) {
-      $gameState.set('activeRow', nextActiveRow);
-    }
-  }
-
   let isHost = false;
   let hostConnectionID = 0;
   $: if ($self) {
